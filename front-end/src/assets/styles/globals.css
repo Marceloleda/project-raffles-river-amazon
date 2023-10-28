@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;1000&family=Open+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;500;600;800;900&display=swap');
+
+body {
+  /* background: linear-gradient(to bottom, #f2f7fa, #d7e9f2, #b9dceb, #9acfe4, #7dc5e7, #5db5d8, #449fc8, #2e89b7); */
+  background: #E0F1EF;
+  /* overflow: hidden; */
+
+}
