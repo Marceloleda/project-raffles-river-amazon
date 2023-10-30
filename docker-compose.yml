@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+
+  back-end:
+    container_name: api
+    build: ./back-end
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    env_file:
+      - ./back-end/.env
+  
+  front-end:
+    container_name: spa
+    build: ./front-end
+    env_file:
+      - ./front-end/.env.local
+    volumes:
+      - next-volume:/var/www/html
+
+  openssl:
+    build: ./openssl
+    volumes:
+      - ssl-certs:/certs
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - 8080:80
+      - 443:443
+
+    volumes:
+      - next-volume:/var/www/html
+      - ssl-certs:/certs
+    depends_on:
+      - back-end
+      - front-end
+      - openssl
+
+volumes:
+  next-volume: 
+  ssl-certs:
+
