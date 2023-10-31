@@ -19,14 +19,18 @@ services:
     volumes:
       - next-volume:/var/www/html
 
-  openssl:
-    build: ./openssl
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
     volumes:
-      - ssl-certs:/certs
+      - ssl-certs:/etc/letsencrypt
+      - next-volume:/var/www/html
+    command: certonly --webroot --agree-tos --email marcelo.leda@icomp.ufam.edu.br -w /var/www/html -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br
 
   nginx:
     container_name: nginx
     build: ./nginx
+    restart: always
     ports:
       - 8080:80
       - 443:443
@@ -37,7 +41,7 @@ services:
     depends_on:
       - back-end
       - front-end
-      - openssl
+      - certbot
 
 volumes:
   next-volume: 
