@@ -29,7 +29,6 @@ services:
 
     volumes:
       - next-volume:/var/www/html
-      - ssl-certs:/certs
     depends_on:
       - back-end
       - front-end
