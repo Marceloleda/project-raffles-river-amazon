@@ -19,13 +19,7 @@ const app = express();
 
 
 app
-  .use(
-    cors({
-      origin: 'http://rifasrioamazonas.com.br', // Define o domínio permitido
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
-      credentials: true, // Define se as credenciais (como cookies) são permitidas
-    })
-  )  
+  .use(cors())
   .use(express.json())
   .use('/auth', authenticationRouter)
   .use('/sign-up', signUpRouter)
