@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "npx prisma migrate dev && npx prisma db seed && node dist/server.js",
     "dev:load-envs": "dotenv -e .env.development",
     "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
     "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
@@ -44,7 +44,8 @@
     "mercadopago": "^1.5.16",
     "pg": "^8.10.0",
     "prisma": "^5.4.2",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
@@ -54,6 +55,7 @@
     "@types/node": "^18.16.3",
     "@types/pg": "^8.6.6",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.7",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^7.2.1",
     "eslint": "^8.39.0",

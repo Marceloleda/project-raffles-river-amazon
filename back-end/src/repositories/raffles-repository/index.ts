@@ -7,7 +7,7 @@ async function createRaffles(data: createRaffle){
     })
 }
 
-async function findSellerAndRafflesByUserId(id:number) {
+async function findSellerAndRafflesByUserId(id:string) {
     return await prisma.sellers.findUnique({
         where: {
             id
@@ -18,18 +18,18 @@ async function findSellerAndRafflesByUserId(id:number) {
     })
 }
 
-async function findRaffle(id:number) {
+async function findRaffle(id:string) {
     return await prisma.raffles.findUnique({
         where: {id}
     })
 }
-async function findMyRaffles(id:number) {
+async function findMyRaffles(id:string) {
     return await prisma.raffles.findMany({
         where: {seller_id: id}
     })
 }
 
-async function updateTotalTickets(id:number, balance: number) {
+async function updateTotalTickets(id:string, balance: number) {
     return await prisma.sellers.update({
         where: {id},
         data:{
@@ -37,7 +37,7 @@ async function updateTotalTickets(id:number, balance: number) {
         }
     })
 }
-async function updateTicketsAvaliables(id:number, balance: number) {
+async function updateTicketsAvaliables(id:string, balance: number) {
     return await prisma.raffles.update({
         where: {id},
         data:{
@@ -45,7 +45,7 @@ async function updateTicketsAvaliables(id:number, balance: number) {
         }
     })
 }
-async function createShuffleNumbers(id: number, shuffledArray: any, userId: number){
+async function createShuffleNumbers(id: string, shuffledArray: any, userId: string){
     return await prisma.shuffle_numbers.create({
         data: {
             raffle_id: id,
@@ -54,7 +54,7 @@ async function createShuffleNumbers(id: number, shuffledArray: any, userId: numb
         }
     })
 }
-async function deleteMyRaffle(id:number) {
+async function deleteMyRaffle(id:string) {
     return await prisma.raffles.delete({
         where: {id}
     })

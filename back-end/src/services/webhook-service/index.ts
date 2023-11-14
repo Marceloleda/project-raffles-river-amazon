@@ -8,7 +8,7 @@ var mercadopago = require('mercadopago');
 
 config();
 
-async function firstNumbers(quantity: number,purchaseId:number, raffleId: number, buyerId: number) {
+async function firstNumbers(quantity: number,purchaseId:string, raffleId: string, buyerId: string) {
   // Recupera o array do banco de dados
   const arrayNumbers = await webhookRepository.findRandomNumbersByRaffleId(raffleId);
   const arrayEmbaralhado = arrayNumbers.random_numbers;

@@ -17,9 +17,8 @@ export async function createRaffle(req: AuthenticatedRequest, res: Response, nex
 
 export async function findRaffle(req: Request, res: Response, next: NextFunction){
     const {id, slug} = req.params
-    const idRaffle = parseInt(id)
     try{
-        const raffle = await raffleService.findUniqueRaffle(idRaffle, slug);
+        const raffle = await raffleService.findUniqueRaffle(id, slug);
         return res.status(httpStatus.OK).send(raffle);
     }catch(error){
         next(error)

@@ -20,7 +20,7 @@ function isExpired(dateString: string) {
     return expirationDate.isBefore(currentDate);
 }
 
-async function createPaymentToBasic(res: Response, userId: number, next: NextFunction) {
+async function createPaymentToBasic(res: Response, userId: string, next: NextFunction) {
     let paymentFound = false;
     const user = await sellerRepository.findByUserId(userId)
     const planBasic = await planRepository.findPlanBasic()
@@ -59,7 +59,7 @@ async function createPaymentToBasic(res: Response, userId: number, next: NextFun
     }
 }
 
-async function createPaymentToPremium(res: Response, userId: number, next: NextFunction) {
+async function createPaymentToPremium(res: Response, userId: string, next: NextFunction) {
     let paymentFound = false;
     const user = await sellerRepository.findByUserId(userId)
     const planPremium = await planRepository.findPlanPremium()
@@ -99,7 +99,7 @@ async function createPaymentToPremium(res: Response, userId: number, next: NextF
         next(error);
     }
 }
-async function createPaymentToMasterRaffle(res: Response, userId: number, next: NextFunction) {
+async function createPaymentToMasterRaffle(res: Response, userId: string, next: NextFunction) {
     let paymentFound = false;
     const user = await sellerRepository.findByUserId(userId)
     const planMaster = await planRepository.findPlanMegaRifa()

@@ -2,7 +2,18 @@ version: "3.9"
 
 services:
 
-  back-end:
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ./back-end/.env
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+  backend:
     container_name: api
     build: ./back-end
     restart: unless-stopped
@@ -24,14 +35,16 @@ services:
     build: ./nginx
     restart: always
     ports:
-      - 80:80
+      - 8080:80
       - 443:443
 
     volumes:
       - next-volume:/var/www/html
     depends_on:
-      - back-end
+      - backend
       - front-end
+      - postgres
 
 volumes:
   next-volume: 
+  postgres-volume:

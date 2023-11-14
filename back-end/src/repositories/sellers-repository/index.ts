@@ -17,7 +17,7 @@ async function findByPhone(phone: string){
     })
 }
 
-async function findByUserId(id: number){
+async function findByUserId(id: string){
     return await prisma.sellers.findUnique({
         where: {id},
         include: {
@@ -31,13 +31,13 @@ async function createSignUp(data: SignUp){
         data,
     })
 }
-async function updatePlan(planUpdate:any, id: number) {
+async function updatePlan(planUpdate:any, id: string) {
     return await prisma.sellers.update({
         where:{id},
         data: planUpdate
     })
 }
-async function logsPayment( id: number) {
+async function logsPayment( id: string) {
     return await prisma.payments_plan.findMany({
         where:{seller_id: id}
     })

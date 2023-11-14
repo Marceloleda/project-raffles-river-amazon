@@ -22,7 +22,7 @@ export default function Plans(){
         setIsLoading(false);
       })
       .catch(err=>{
-        console.log(err.message)
+        console.log(err)
         setIsLoading(false);
     })
   },[])

@@ -23,8 +23,7 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
       buyer = await buyerRepository.createBuyer( name, email, phone_number);
     }
     
-    const IdRaffle = parseInt(idRaffle)
-    const raffle = await rafflesRepository.findRaffle(IdRaffle)
+    const raffle = await rafflesRepository.findRaffle(idRaffle)
     const date = dayjs();
     const expireAt = date.add(10, 'minutes');
 
@@ -49,7 +48,7 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
       if (!buyer.id) throw unauthorizedError();
 
       if (!idRaffle || !quantity || !total) throw notFoundError();
-      await mercadoPagoRepository.createBuyerPayment(buyer.id, IdRaffle, quantity, total, payment.body)
+      await mercadoPagoRepository.createBuyerPayment(buyer.id, idRaffle, quantity, total, payment.body)
 
         console.log("buyer payment created")
       }

@@ -12,7 +12,7 @@ export type SignUp = Omit<sellers,  'created_at' | 'updated_at'>;
 export type createRaffle = Omit<raffles, 'updated_at'>
 
 export type payment_body = {
-    plan_id: number,
+    plan_id: string,
     name_plan: string,
     name_user:string,
     value: Decimal,

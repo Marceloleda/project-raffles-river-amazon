@@ -6,7 +6,7 @@ import { NextFunction} from "express";
 
 config();
 
-async function createPaymentPlan( body: payment_body, payment: any, userId: number, next: NextFunction) {
+async function createPaymentPlan( body: payment_body, payment: any, userId: string, next: NextFunction) {
   try {
     if (!userId) throw unauthorizedError();
 

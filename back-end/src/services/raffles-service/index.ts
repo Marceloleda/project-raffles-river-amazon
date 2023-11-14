@@ -25,7 +25,7 @@ function shuffleNumber(number: number) {
   
   
 
-async function raffleCreate(res: Response, data:createRaffle, userId: number) { 
+async function raffleCreate(res: Response, data:createRaffle, userId: string) { 
     const date = dayjs();
     if(!userId) throw unauthorizedError()
 
@@ -155,13 +155,13 @@ async function raffleCreate(res: Response, data:createRaffle, userId: number) {
     }
 }
 
-async function findCampaigns(userId: number): Promise<any> {
+async function findCampaigns(userId: string): Promise<any> {
     const campaigns = await rafflesRepository.findMyRaffles(userId)
     if(!campaigns) throw notFoundError()
     return campaigns
 }
 
-async function findUniqueRaffle(id: number, slug: string): Promise<raffles> {
+async function findUniqueRaffle(id: string, slug: string): Promise<raffles> {
     const raffle = await rafflesRepository.findRaffle(id)
     if(!raffle) throw notFoundError()
     const title_= raffle.title.replace(/ /g, "-")
@@ -171,15 +171,14 @@ async function findUniqueRaffle(id: number, slug: string): Promise<raffles> {
     }
     return raffle
 }
-async function deleteRaffles(userId: number, id: string): Promise<any> {
+async function deleteRaffles(userId: string, id: string): Promise<any> {
     if(!userId || !id) throw notFoundError()
-    const idRaffle = parseInt(id)
-    const raffle = await rafflesRepository.findRaffle(idRaffle)
+    const raffle = await rafflesRepository.findRaffle(id)
     if(!raffle) throw notFoundError()
     if(raffle.seller_id !== userId) throw unauthorizedError()
 
 
-    const deleted = await rafflesRepository.deleteMyRaffle(idRaffle)
+    const deleted = await rafflesRepository.deleteMyRaffle(id)
     return deleted
 }
 

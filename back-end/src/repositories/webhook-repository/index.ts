@@ -56,12 +56,12 @@ async function updateStatusPurchases(payment: any){
         }
     })
 }
-async function findRandomNumbersByRaffleId(raffleId: number) {
+async function findRandomNumbersByRaffleId(raffleId: string) {
     return await prisma.shuffle_numbers.findFirst({
         where: {raffle_id: raffleId}
     })
 }
-async function updateRamdomNumbers(ramdomNumbers:any, id: number) {
+async function updateRamdomNumbers(ramdomNumbers:any, id: string) {
     return await prisma.shuffle_numbers.update({
         where:{id},
         data: {
@@ -69,7 +69,7 @@ async function updateRamdomNumbers(ramdomNumbers:any, id: number) {
         }
     })
 }
-async function createNumbersReservations(ramdomNumbers:any, purchaseId: number, raffleId: number, buyerId:number) {
+async function createNumbersReservations(ramdomNumbers:any, purchaseId: string, raffleId: string, buyerId:string) {
     return await prisma.numbers_reservations.create({
         data:{
             buyer_id: buyerId,
@@ -79,12 +79,12 @@ async function createNumbersReservations(ramdomNumbers:any, purchaseId: number, 
         }
     })
 }
-async function findBuyer(buyer_id:number) {
+async function findBuyer(buyer_id:string) {
     return await prisma.numbers_reservations.findFirst({
         where:{buyer_id: buyer_id}
     })
 }
-async function updateArrayNumbersBuyer(id: number, updateFirstNumbers: string[]) {
+async function updateArrayNumbersBuyer(id: string, updateFirstNumbers: string[]) {
     return await prisma.numbers_reservations.update({
       where: { id: id },
       data: {
@@ -92,7 +92,7 @@ async function updateArrayNumbersBuyer(id: number, updateFirstNumbers: string[])
       }
     });
 }
-async function findRaffle(id:number) {
+async function findRaffle(id:string) {
     return await prisma.numbers_reservations.findFirst({
         where: {raffle_id: id}
     })

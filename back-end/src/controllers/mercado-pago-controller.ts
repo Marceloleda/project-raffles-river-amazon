@@ -4,13 +4,12 @@ import { payment_body } from "../protocols";
 import dayjs from "dayjs";
 import { unauthorizedError } from "../errors";
 import mercadoPagoService from "../services/mercado-pago-service";
-import httpStatus from "http-status";
 config();
 
-async function paymentPix(res:Response, body:payment_body, userId: number, next: NextFunction) {
+async function paymentPix(res:Response, body:payment_body, userId: string, next: NextFunction) {
   if(!userId) throw unauthorizedError()
   const date = dayjs();
-  const expireAt = date.add(10, 'minutes');
+  const expireAt = date.add(20, 'minutes');
 
     var mercadopago = require('mercadopago');
     mercadopago.configurations.setAccessToken(process.env.TOKEN_MERCADOPAGO_PRODUCTION);

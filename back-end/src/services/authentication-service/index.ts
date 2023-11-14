@@ -29,7 +29,7 @@ async function getUserOrFail(email: string): Promise<GetUserOrFailResult> {
   return seller;
 }
 
-async function createToken(userId: number) {
+async function createToken(userId: string) {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET);
 
   return token;

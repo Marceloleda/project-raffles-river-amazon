@@ -8,7 +8,7 @@ datasource db {
 }
 
 model buyer {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   full_name  String   @db.VarChar(255)
   email      String   @db.VarChar(255)
   phone      String   @db.VarChar(20)
@@ -16,70 +16,24 @@ model buyer {
 }
 
 model numbers_reservations {
-  id               Int      @id @default(autoincrement())
-  buyer_id         Int
-  purchases_id     Int
-  raffle_id        Int
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  buyer_id         String   @db.Uuid
+  purchases_id     String   @db.Uuid
+  raffle_id        String   @db.Uuid
   ticket_numbers   String[]
   reservation_date DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([ticket_numbers], map: "idx_purchases_ticket_numbers_gin", type: Gin)
 }
 
-model purchases {
-  id                 Int     @id @default(autoincrement())
-  buyer_id           Int
-  raffle_id          Int
-  quantity_tickets   Int
-  total_value        Decimal @db.Decimal(10, 2)
-  purchase_date      String  @db.VarChar(255)
-  date_of_expiration String  @db.VarChar(255)
-  payment_status     String? @db.VarChar(255)
-  payment_id         String? @unique @db.VarChar(255)
-}
-
-model raffles {
-  id                Int       @id @default(autoincrement())
-  seller_id         Int
-  title             String    @db.VarChar(255)
-  description       String
-  ticket_price      Decimal   @db.Decimal(10, 2)
-  total_tickets     Int
-  start_date        DateTime  @default(now()) @db.Timestamptz(6)
-  end_date          DateTime? @db.Timestamptz(6)
-  created_at        DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime  @default(now()) @db.Timestamptz(6)
-  expire_at         String?   @db.VarChar(255)
-  avaliable_tickets Int?
-  prizes            prizes[]
-  sellers           sellers   @relation(fields: [seller_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_raffles_sellers")
-}
-
-model sellers {
-  id                Int               @id @default(autoincrement())
-  name              String            @db.VarChar(255)
-  email             String            @unique(map: "sellers_email_unique") @db.VarChar(255)
-  password_hash     String            @db.VarChar(255)
-  phone_number      String            @unique(map: "sellers_phone_number_unique") @db.VarChar(20)
-  cpf               String            @unique(map: "sellers_cpf_unique") @db.VarChar(15)
-  created_at        DateTime          @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
-  total_ticket_plan Int?              @default(100)
-  plan_id           Int?              @default(1)
-  payments_plan     payments_plan[]
-  raffles           raffles[]
-  plans             plans?            @relation(fields: [plan_id], references: [id], onDelete: Cascade, map: "fk_sellers_plans")
-  shuffle_numbers   shuffle_numbers[]
-}
-
 model payments_plan {
-  id                 Int      @id @default(autoincrement())
-  seller_id          Int
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  seller_id          String   @db.Uuid
   payment_id         String   @unique(map: "unique_payment_id") @db.VarChar(255)
   status_payment     String   @db.VarChar(255)
   created_at         String   @db.VarChar(255)
   updated_at         DateTime @default(now()) @db.Timestamptz(6)
-  plan_id            Int?
+  plan_id            String?  @db.Uuid
   name_plan          String?  @db.VarChar(255)
   date_of_expiration String?  @db.VarChar(255)
   plans              plans?   @relation(fields: [plan_id], references: [id], onDelete: Cascade, map: "fk_payments_plan_plans")
@@ -87,7 +41,7 @@ model payments_plan {
 }
 
 model plans {
-  id                 Int             @id @default(autoincrement())
+  id                 String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name               String          @unique(map: "plans_name_unique") @db.VarChar(255)
   description        String?         @db.VarChar(255)
   max_campaigns      Int?
@@ -108,19 +62,65 @@ model plans {
 }
 
 model prizes {
-  id          Int       @id @default(autoincrement())
-  raffle_id   Int
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  raffle_id   String    @db.Uuid
   name        String    @db.VarChar(255)
   description String?
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   raffles     raffles   @relation(fields: [raffle_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model purchases {
+  id                 String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  buyer_id           String  @db.Uuid
+  raffle_id          String  @db.Uuid
+  quantity_tickets   Int
+  total_value        Decimal @db.Decimal(10, 2)
+  purchase_date      String  @db.VarChar(255)
+  date_of_expiration String  @db.VarChar(255)
+  payment_status     String? @db.VarChar(255)
+  payment_id         String? @unique @db.VarChar(255)
+}
+
+model raffles {
+  id                String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  seller_id         String    @db.Uuid
+  title             String    @db.VarChar(255)
+  description       String
+  ticket_price      Decimal   @db.Decimal(10, 2)
+  total_tickets     Int
+  start_date        DateTime  @default(now()) @db.Timestamptz(6)
+  end_date          DateTime? @db.Timestamptz(6)
+  created_at        DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime  @default(now()) @db.Timestamptz(6)
+  expire_at         String?   @db.VarChar(255)
+  avaliable_tickets Int?
+  prizes            prizes[]
+  sellers           sellers   @relation(fields: [seller_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_raffles_sellers")
+}
+
+model sellers {
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name              String            @db.VarChar(255)
+  email             String            @unique(map: "sellers_email_unique") @db.VarChar(255)
+  password_hash     String            @db.VarChar(255)
+  phone_number      String            @unique(map: "sellers_phone_number_unique") @db.VarChar(20)
+  cpf               String            @unique(map: "sellers_cpf_unique") @db.VarChar(15)
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  total_ticket_plan Int?              @default(100)
+  plan_id           String?           @db.Uuid
+  payments_plan     payments_plan[]
+  raffles           raffles[]
+  plans             plans?            @relation(fields: [plan_id], references: [id], onDelete: Cascade, map: "fk_sellers_plans")
+  shuffle_numbers   shuffle_numbers[]
+}
+
 model shuffle_numbers {
-  id             Int      @id(map: "consult_numbers_pkey") @default(autoincrement())
-  raffle_id      Int
+  id             String   @id(map: "consult_numbers_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  raffle_id      String   @db.Uuid
   ticket_date    DateTime @default(now()) @db.Timestamptz(6)
-  seller_id      Int?
+  seller_id      String?  @db.Uuid
   random_numbers String[]
   sellers        sellers? @relation(fields: [seller_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consult_numbers_sellers")
 }

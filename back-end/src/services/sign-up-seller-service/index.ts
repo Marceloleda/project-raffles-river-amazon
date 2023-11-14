@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { SignUp } from "../../protocols"
 import sellerRepository from "../../repositories/sellers-repository"
 import { Response } from "express"
+import planRepository from "../../repositories/plans-repository";
 
 
 async function signUpCreate(res: Response, data:SignUp) {   
@@ -12,9 +13,10 @@ async function signUpCreate(res: Response, data:SignUp) {
     }
 
     const hash = await hashPassword(data.password_hash);
-    const data_with_hash = ({...data, password_hash: hash})
+    const plan_id_test = await planRepository.findPlanTest()
+    const data_with_hash_and_planId = ({...data, password_hash: hash, plan_id: plan_id_test.id})
 
-    const seller = await sellerRepository.createSignUp(data_with_hash)
+    const seller = await sellerRepository.createSignUp(data_with_hash_and_planId)
 
     return seller 
 }
