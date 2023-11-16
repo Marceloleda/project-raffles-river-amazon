@@ -62,4 +62,3 @@ volumes:
   
 networks:
   rede_bd:
-    driver: bridge
