@@ -1,7 +1,8 @@
 version: "3.9"
 
 services:
-
+  
+  
   postgres:
     image: postgres
     container_name: postgres
@@ -12,6 +13,8 @@ services:
       - ./back-end/.env
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - rede_bd
 
   backend:
     container_name: api
@@ -21,14 +24,21 @@ services:
       - 5000:5000
     env_file:
       - ./back-end/.env
+    depends_on:
+      - postgres
+    networks:
+      - rede_bd
   
   front-end:
     container_name: spa
+    restart: always
     build: ./front-end
     env_file:
       - ./front-end/.env.local
     volumes:
       - next-volume:/var/www/html
+    networks:
+      - rede_bd
 
   nginx:
     container_name: nginx
@@ -48,3 +58,7 @@ services:
 volumes:
   next-volume: 
   postgres-volume:
+  
+networks:
+  rede_bd:
+    driver: brigde
