@@ -47,7 +47,8 @@ services:
     ports:
       - 80:80
       - 443:443
-
+    networks:
+      - rede_bd
     volumes:
       - next-volume:/var/www/html
     depends_on:
