@@ -61,4 +61,4 @@ volumes:
   
 networks:
   rede_bd:
-    driver: brigde
+    driver: bridge
