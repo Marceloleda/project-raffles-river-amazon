@@ -7,7 +7,7 @@ import { buyTicket } from "../../services/api";
 
 export function BasicModal() {
   let dataRaffle
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [payment, setPayment] = useState()
 
   if (typeof window !== 'undefined') {
@@ -23,17 +23,19 @@ export function BasicModal() {
 
 function sendBuyTicket(event){
   event.preventDefault();
+  setIsLoading(true);
   const body = {...buyer, 
   idRaffle: dataRaffle.raffleId,
   quantity: dataRaffle.quantity,
   total: dataRaffle.total
   }
+  console.log(body)
+
+  setIsLoading(true);
   buyTicket(body)
-  setIsLoading(true)
   .then((res) => {
     const mercadoPago = res.data
     // router.push(`/payment-buyer/${mercadoPago.id}`)
-    setIsLoading(false);
     router.push(`${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`)
   })
   .catch(err => {console.log(err)});

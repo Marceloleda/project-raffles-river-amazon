@@ -1,12 +1,12 @@
 import { prisma } from "../../config";
 
 async function createPlanPayment(id_plan: string,payment:any, id: string) {
-    // const paymentId = payment.id;
-    // const paymentIdString = paymentId.toString();
+    const paymentId = payment.id;
+    const paymentIdString = paymentId.toString();
     return await prisma.payments_plan.create({
         data: {
             seller_id: id,
-            payment_id: payment.id,
+            payment_id:paymentIdString,
             status_payment: payment.status,
             plan_id: id_plan,
             name_plan: payment.description,
@@ -17,8 +17,8 @@ async function createPlanPayment(id_plan: string,payment:any, id: string) {
     })
 }
 async function createBuyerPayment(buyerId: string, idRaffle: string, quantity: number, total: number, payment:any) {
-    // const paymentId = payment.id;
-    // const paymentIdString = paymentId.toString();
+    const paymentId = payment.id;
+    const paymentIdString = paymentId.toString();
     return await prisma.purchases.create({
         data: {
             buyer_id: buyerId,
@@ -26,7 +26,7 @@ async function createBuyerPayment(buyerId: string, idRaffle: string, quantity: n
             quantity_tickets: quantity,
             total_value: total,
             payment_status: payment.status,
-            payment_id: payment.id,
+            payment_id: paymentIdString,
             date_of_expiration: payment.date_of_expiration,
             purchase_date: payment.date_created
         }
