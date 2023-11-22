@@ -3,7 +3,6 @@ import { buyData } from "../../protocols";
 import buyerRepository from "../../repositories/buyer-repository";
 import rafflesRepository from "../../repositories/raffles-repository";
 import dayjs from "dayjs";
-import mercadoPagoService from "../mercado-pago-service";
 import { NextFunction } from "express";
 import mercadoPagoRepository from "../../repositories/payments-plan-repository";
 
@@ -45,10 +44,10 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
     try{
       const payment = await mercadopago.payment.create(payment_data)
       if(payment){
-      if (!buyer.id) throw unauthorizedError();
+        if (!buyer.id) throw unauthorizedError();
 
-      if (!idRaffle || !quantity || !total) throw notFoundError();
-      await mercadoPagoRepository.createBuyerPayment(buyer.id, idRaffle, quantity, total, payment.body)
+        if (!idRaffle || !quantity || !total) throw notFoundError();
+        await mercadoPagoRepository.createBuyerPayment(buyer.id, idRaffle, quantity, total, payment.body)
 
         console.log("buyer payment created")
       }

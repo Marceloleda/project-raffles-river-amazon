@@ -25,6 +25,7 @@
     "@mercadopago/sdk-js": "^0.0.2",
     "@prisma/client": "^5.4.2",
     "@types/cors": "^2.8.13",
+    "axios": "^1.6.2",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "cpf-check": "^3.0.0",

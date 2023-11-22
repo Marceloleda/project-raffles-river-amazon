@@ -15,6 +15,14 @@ async function findBuyerByPhone(phone: string) {
     return buyer;
 }
 
+async function findBuyerById(id: string) {
+  const buyer = await prisma.buyer.findFirst({
+    where: {id}
+  });
+
+  return buyer;
+}
+
 async function createBuyer(name: string, email: string, phone: string) {
     const buyer = await prisma.buyer.create({
       data: {
@@ -29,6 +37,7 @@ async function createBuyer(name: string, email: string, phone: string) {
 const buyerRepository = {
     findBuyerByEmail,
     findBuyerByPhone,
+    findBuyerById,
     createBuyer
 }
 export default buyerRepository

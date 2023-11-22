@@ -4,6 +4,8 @@ import rafflesRepository from "../../repositories/raffles-repository";
 import webhookRepository from "../../repositories/webhook-repository";
 import { config } from "dotenv";
 import { NextFunction} from "express";
+import whatsappApi from "../whatsapp-api-service";
+import buyerRepository from "@/repositories/buyer-repository";
 var mercadopago = require('mercadopago');
 
 config();
@@ -18,13 +20,20 @@ async function firstNumbers(quantity: number,purchaseId:string, raffleId: string
   //caso o mesmo usuario ja tenha comprado, os numeros vão ser apenas acrescentados
   const findReservation = await webhookRepository.findBuyer(buyerId);
   const findRaffleId = await webhookRepository.findRaffle(raffleId)
+  const buyer = await buyerRepository.findBuyerById(buyerId)
 
   if(findReservation && findRaffleId) {
     const updatedTicketNumbers = [...findReservation.ticket_numbers, ...numbersFirst];
     await webhookRepository.updateArrayNumbersBuyer(findReservation.id, updatedTicketNumbers);
+
+    //envia os numeros via whatsapp atualizados
+    whatsappApi.sendMessage(buyer.full_name, buyer.phone, updatedTicketNumbers)
   }
   else{
     await webhookRepository.createNumbersReservations(numbersFirst, purchaseId, raffleId, buyerId)
+
+    //envia os numeros via whatsapp atualizados
+    whatsappApi.sendMessage(buyer.full_name, buyer.phone, numbersFirst)
   }
 
   // Atualiza o array no banco de dados removendo os primeiros números
@@ -48,14 +57,14 @@ async function findPurchaseAndChangePlan( idPayment: string, next: NextFunction)
     console.log(status_payment)
     if (status_payment === "approved") {
       const userPlan = await webhookRepository.findByIdPurchase(idPayment)
-      //caso não seja um pagamento de um plao, ele verifica os pagamentos dos compradores (buyers)
+      //caso não seja um pagamento de um plano, ele verifica os pagamentos dos compradores (buyers)
       if(!userPlan){
-        const buyer = await webhookRepository.findByBuyerIdPayment(idPayment)
+        const purchase = await webhookRepository.findByBuyerIdPayment(idPayment)
         await webhookRepository.updateStatusBuyerPayment(idPayment)
-        const raffle = await rafflesRepository.findRaffle(buyer.raffle_id)
-        const valueTickets = raffle.avaliable_tickets - buyer.quantity_tickets
+        const raffle = await rafflesRepository.findRaffle(purchase.raffle_id)
+        const valueTickets = raffle.avaliable_tickets - purchase.quantity_tickets
         await rafflesRepository.updateTicketsAvaliables(raffle.id, valueTickets)
-        firstNumbers(buyer.quantity_tickets, buyer.id, raffle.id, buyer.buyer_id)
+        firstNumbers(purchase.quantity_tickets, purchase.id, raffle.id, purchase.buyer_id)
         return
       }
       
