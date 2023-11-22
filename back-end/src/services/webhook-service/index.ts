@@ -5,7 +5,7 @@ import webhookRepository from "../../repositories/webhook-repository";
 import { config } from "dotenv";
 import { NextFunction} from "express";
 import whatsappApi from "../whatsapp-api-service";
-import buyerRepository from "@/repositories/buyer-repository";
+import buyerRepository from "../../repositories/buyer-repository";
 var mercadopago = require('mercadopago');
 
 config();
