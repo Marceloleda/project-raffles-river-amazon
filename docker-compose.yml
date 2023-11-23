@@ -68,7 +68,7 @@ services:
     container_name: certbot
     volumes:
       - ssl-certs:/etc/letsencrypt
-      - react-volume:/var/www/html
+      - next-volume:/var/www/html
     command: certonly --webroot --agree-tos --email marcelofilho2000.mf@gmail.com -w /var/www/html -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br
     networks:
       - rede_bd
