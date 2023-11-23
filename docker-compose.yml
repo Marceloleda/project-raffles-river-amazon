@@ -63,6 +63,15 @@ services:
     networks:
       - rede_bd
 
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+    - ssl-certs:/etc/letsencrypt
+    - next-volume:/var/www/html
+    command: certonly --webroot --agree-tos --email marcelofilho2000.mf@gmail.com -w /var/www/html -d https://rifasrioamazonas.com.br -d https://www.rifasrioamazonas.com.br
+
+
   nginx:
     container_name: nginx
     build: ./nginx
@@ -74,16 +83,19 @@ services:
       - rede_bd
     volumes:
       - next-volume:/var/www/html
+      - ssl-certs:/certs
     depends_on:
       - backend
       - front-end
       - postgres
       - whatsapp
+      - certbot
 
 volumes:
   next-volume: 
   postgres-volume:
   db:
+  ssl-certs:
   
 networks:
   rede_bd:
