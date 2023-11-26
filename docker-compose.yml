@@ -69,7 +69,7 @@ services:
     volumes: 
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email marcelofilho2000.mf@gmail.com -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br --agree-tos
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email marcelo.leda@icomp.ufam.edu.br -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br --agree-tos
 
   nginx:
     container_name: nginx
