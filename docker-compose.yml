@@ -64,12 +64,11 @@ services:
       - rede_bd
 
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:latest
     container_name: certbot
     volumes:
-      - ssl-certs:/etc/letsencrypt
-      - next-volume:/var/www/html
-    command: certonly --webroot --agree-tos --email marcelofilho2000.mf@gmail.com -w /var/www/html -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
 
   nginx:
@@ -83,7 +82,7 @@ services:
       - rede_bd
     volumes:
       - next-volume:/var/www/html
-      - ssl-certs:/certs
+      - ./certbot/www/:/var/www/certbot/:ro
     depends_on:
       - backend
       - front-end
