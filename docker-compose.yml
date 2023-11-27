@@ -92,7 +92,6 @@ services:
       - front-end
       - postgres
       - whatsapp
-      - certbot
 
 volumes:
   next-volume: 
