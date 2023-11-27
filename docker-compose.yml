@@ -65,11 +65,10 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 86400 & wait $${!}; done;'"
+    command: certbot certonly --webroot -w /var/www/certbot -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email marcelo.leda@icomp.ufam.edu.br -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br --agree-tos
+      - /var/www/certbot:/var/www/certbot
     networks:
       - rede_bd
 
