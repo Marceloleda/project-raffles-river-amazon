@@ -67,9 +67,9 @@ services:
     image: certbot/certbot
     container_name: certbot
     volumes:
-    - ssl-certs:/etc/letsencrypt
-    - next-volume:/var/www/html
-    command: certonly --webroot --agree-tos --email marcelo.leda@icomp.ufam.edu.br -w /var/www/html -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email marcelo.leda@icomp.ufam.edu.br -d rifasrioamazonas.com.br -d www.rifasrioamazonas.com.br --agree-tos
     networks:
       - rede_bd
 
@@ -84,8 +84,8 @@ services:
       - rede_bd
     volumes:
       - next-volume:/var/www/html
-      - ssl-certs:/certs
-
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - backend
       - front-end
@@ -97,7 +97,6 @@ volumes:
   next-volume: 
   postgres-volume:
   db:
-  ssl-certs:
   
 networks:
   rede_bd:
