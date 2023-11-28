@@ -11,24 +11,28 @@ export default function Plans(){
   const [plans, setPlans] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState({})
+  const [token, setToken] = useState(null);
 
-  const storedToken = localStorage.getItem('token');
-
+  
   const handlePurchaseButtonClick = (plan) => {
     CreatePayments(plan.name, router);
   };
-
+  
+  
   useEffect(()=>{
-    findUser()
-        .then((res)=>{
-            setUser(res.data)
-        })
-        .catch((err=>{
-            console.log(err.message)
-        }))
-},[])
+    const storedToken = localStorage.getItem('token');
+    setToken(storedToken);
+    if(storedToken){
+      findUser()
+      .then((res)=>{
+          setUser(res.data)
+          console.log(res.data)
+      })
+      .catch((err=>{
+          console.log(err.message)
+      }))
+    }
 
-  useEffect(()=>{
     findPlans()
       .then((response)=>{
         setPlans(response.data)
@@ -63,7 +67,7 @@ export default function Plans(){
         <SupportPhone>Suporte via WhatsApp: {plan.support_phone? "Sim": "Não"}</SupportPhone>
         <CustomLogo>Customizar a própria logo: {plan.custom_logo? "Sim": "Não"}</CustomLogo>
           <PurchaseButton onClick={() => handlePurchaseButtonClick(plan)} >
-            {plan.name === user?.plans?.name &&  storedToken ? "Renovar" : "Adquirir"}
+            {plan.name === user?.plans?.name &&  token ? "Renovar" : "Adquirir"}
           </PurchaseButton>
       </PlanCard>
     )
