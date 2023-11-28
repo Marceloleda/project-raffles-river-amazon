@@ -26,13 +26,13 @@ async function firstNumbers(quantity: number,purchaseId:string, raffleId: string
     const updatedTicketNumbers = [...findReservation.ticket_numbers, ...numbersFirst];
     await webhookRepository.updateArrayNumbersBuyer(findReservation.id, updatedTicketNumbers);
 
-    //envia os numeros via whatsapp atualizados
+    //envia os numeros da sorte via whatsapp atualizados
     whatsappApi.sendMessage(buyer.full_name, buyer.phone, updatedTicketNumbers)
   }
   else{
     await webhookRepository.createNumbersReservations(numbersFirst, purchaseId, raffleId, buyerId)
 
-    //envia os numeros via whatsapp atualizados
+    //envia os numeros da sorte via whatsapp atualizados
     whatsappApi.sendMessage(buyer.full_name, buyer.phone, numbersFirst)
   }
 

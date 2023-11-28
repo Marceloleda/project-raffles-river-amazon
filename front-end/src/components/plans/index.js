@@ -1,6 +1,6 @@
 'use client'
 
-import { findPlans } from "../../services/api";
+import { findPlans, findUser } from "../../services/api";
 import CreatePayments from "../../services/paymentPlan";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
@@ -10,10 +10,23 @@ export default function Plans(){
   const router = useRouter();
   const [plans, setPlans] = useState([])
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState({})
+
+  const storedToken = localStorage.getItem('token');
 
   const handlePurchaseButtonClick = (plan) => {
     CreatePayments(plan.name, router);
   };
+
+  useEffect(()=>{
+    findUser()
+        .then((res)=>{
+            setUser(res.data)
+        })
+        .catch((err=>{
+            console.log(err.message)
+        }))
+},[])
 
   useEffect(()=>{
     findPlans()
@@ -27,13 +40,12 @@ export default function Plans(){
     })
   },[])
 
- 
 
   const cardPlans = plans
   .sort((a, b) => a.id - b.id)
   .map((plan, id)=>{
     const delay = id * 100;
-    const isHighlighted = plan.name === "Plano Premium";
+    const isHighlighted = plan.name === "Pacote Premium";
     return(
       <PlanCard key={id} style={{ 
         animationDelay: `${delay}ms`,
@@ -51,7 +63,7 @@ export default function Plans(){
         <SupportPhone>Suporte via WhatsApp: {plan.support_phone? "Sim": "Não"}</SupportPhone>
         <CustomLogo>Customizar a própria logo: {plan.custom_logo? "Sim": "Não"}</CustomLogo>
           <PurchaseButton onClick={() => handlePurchaseButtonClick(plan)} >
-            {plan.name === "Plano Teste" ? "Cadastre-se" : "Comprar"}
+            {plan.name === user?.plans?.name &&  storedToken ? "Renovar" : "Adquirir"}
           </PurchaseButton>
       </PlanCard>
     )
@@ -65,7 +77,9 @@ export default function Plans(){
                 <StyledSpinner />
               </SpinnerContainer>
               ) : (
-              cardPlans
+              <>
+                {cardPlans}
+              </>
             )}
             </PlansContainer>
         </>
@@ -87,7 +101,7 @@ const PlanCard = styled.div`
   flex-direction: column;
   margin: 15px;
   width: 250px;
-  height: 400px;
+  height: 450px;
   background-color: #f2f2f2;
   border-radius: 40px;
   padding: 20px;
