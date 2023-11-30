@@ -1,8 +1,8 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { signUpSend } from "../../services/api";
+import { findUser, signUpSend } from "../../services/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -16,8 +16,21 @@ export default function Cadastro(){
         senha: '',
         confirmeSenha: ''
     });
-
     const [passwordError, setPasswordError] = useState(false);
+
+  
+    useEffect(() => {
+      const storedToken = localStorage.getItem('token');
+      if(storedToken){
+          findUser()
+          .then(()=>{
+            router.push("/seller")
+        })
+        .catch((err=>{
+            localStorage.setItem("token", '')
+        }))
+      }
+    }, []);
 
     function Cadastro(event){
         event.preventDefault();

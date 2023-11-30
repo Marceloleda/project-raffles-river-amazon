@@ -21,12 +21,11 @@ export default function Plans(){
   
   useEffect(()=>{
     const storedToken = localStorage.getItem('token');
-    setToken(storedToken);
     if(storedToken){
       findUser()
       .then((res)=>{
-          setUser(res.data)
-          console.log(res.data)
+        setUser(res.data)
+        setToken(storedToken);
       })
       .catch((err=>{
           console.log(err.message)
@@ -91,7 +90,6 @@ export default function Plans(){
 }
 const PlansContainer = styled.div`
 display: flex;
-// background: green;
 justify-content: space-around;
 flex-direction: wrap;
 box-sizing: border-box;
@@ -117,6 +115,15 @@ const PlanCard = styled.div`
   animation: fade-in 0.5s ease-in-out forwards;
   animation-delay: 0ms;
 
+  &:hover {
+    box-shadow: 0 4px 9px rgba(5, 5, 5, 5); /* Aumenta a sombra quando o mouse está sobre a div */
+    padding: 21px;
+    margin-top: -10px;
+
+
+
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;
@@ -130,7 +137,7 @@ const PlanCard = styled.div`
 
 `;
 const BestSeller = styled.p`
-font-size: 14px;
+font-size: 13px;
   font-weight: bold;
   color: yellow;
   background-color: #ff847c;

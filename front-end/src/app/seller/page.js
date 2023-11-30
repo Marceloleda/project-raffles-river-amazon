@@ -9,7 +9,7 @@ import CreateCampaign from "../../components/createCampaign";
 import FindCampaign from "../../components/findCampaign/index";
 
 export default function Seller(){
-    const router = useRouter()
+    // const router = useRouter()
     const [isLoading, setIsLoading] = useState(true);
     const [showCreateCampaign, setShowCreateCampaign] = useState(false);
     const [showFindCampaign, setShowFindCampaign] = useState(false);

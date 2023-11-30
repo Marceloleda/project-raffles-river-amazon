@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { api, signIn } from "../../services/api";
+import { api, findUser, signIn } from "../../services/api";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Logo from '../../assets/images/logo_seler.jpeg'
@@ -18,14 +18,26 @@ export default function Login(){
         email: '',
         password_hash: ''
     })
+    
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if(storedToken){
+            findUser()
+            .then(()=>{
+              router.push("/seller")
+          })
+          .catch((err=>{
+              localStorage.setItem("token", '')
+          }))
+        }
+      }, []);
+
     function enviarLogin(event){
         event.preventDefault();
 
         signIn(login)
             .then((response)=>{
             api.defaults.headers["Authorization"] = `Bearer ${response.data.Token}`;
-
-            console.log(response.data)
             localStorage.setItem("token", response.data.Token)
             alert('logado com sucesso')
             router.push("/seller");

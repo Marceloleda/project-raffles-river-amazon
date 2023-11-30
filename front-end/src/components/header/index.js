@@ -5,13 +5,23 @@ import Image from 'next/image';
 import Logo from '../../assets/images/logo_main.png'
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { findUser } from "../../services/api";
 
 export default function Header(){
     const [token, setToken] = useState(null);
   
     useEffect(() => {
       const storedToken = localStorage.getItem('token');
-      setToken(storedToken);
+      if(storedToken){
+          findUser()
+          .then(()=>{
+            setToken(storedToken);
+        })
+        .catch((err=>{
+            localStorage.setItem("token", '')
+            console.log(err.message)
+        }))
+      }
     }, []);
     return (
         <ConteinerHeader>
