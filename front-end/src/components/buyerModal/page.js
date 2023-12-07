@@ -107,14 +107,13 @@ function sendBuyTicket(event){
                           <Popup>
                             <Alert severity="warning">
                               <AlertTitle>Aviso</AlertTitle>
-                              <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
                               <Image
                                   src={LogoWhats} 
                                   alt="whatsapp"
-                                  width={40} 
-                                  height={40} 
-                                  style={{ marginLeft: '290px' }}
+                                  width={35} 
+                                  height={35} 
                                 />
+                              <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
 
                             </Alert>
                           </Popup>
@@ -244,7 +243,7 @@ const ModalContent = styled.div`
   display:flex;
   justify-content: center;
   flex-direction:column;
-  width:400px;
+  width:370px;
   background-color: #fff;
   border-radius: 0.375rem;
   padding: 1rem;
@@ -284,11 +283,13 @@ const Forms = styled.div`
             flex-direction:column;
             justify-content: center;
             align-items: center;
+            
         }
 `;
 const Inserir = styled(IMaskInput)`
     width: 100%;
     height: 58px;
+    font-size: 18px;
     margin-bottom: 16px;
     background: #FFFFFF;
     border: 1px solid #D5D5D5;

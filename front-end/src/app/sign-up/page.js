@@ -112,7 +112,7 @@ export default function Cadastro(){
                             <Inserir 
                                 id="phone_number" 
                                 type="phone" 
-                                placeholder="celular" 
+                                placeholder="(99) 99999-9999" 
                                 mask="(#0) 00000-0000"
                                 definitions={{
                                 '#': /[1-9]/,
@@ -126,8 +126,8 @@ export default function Cadastro(){
                             <Inserir 
                                 id="cpf" 
                                 mask="000.000.000-00"
-                                type="cpf" 
-                                placeholder="cpf" 
+                                type="CPF" 
+                                placeholder="CPF" 
                                 value={cadastro.cpf} 
                                 onChange={(e)=>
                                 setCadastro({...cadastro, cpf: e.target.value})
