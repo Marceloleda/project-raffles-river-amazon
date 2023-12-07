@@ -20,6 +20,45 @@ function isExpired(dateString: string) {
     return expirationDate.isBefore(currentDate);
 }
 
+async function createPaymentToTest(res: Response, userId: string, next: NextFunction) {
+    let paymentFound = false;
+    const user = await sellerRepository.findByUserId(userId)
+    const planTest = await planRepository.findPlanTest()
+
+    if(!userId) throw unauthorizedError()
+    if(!user) throw notFoundError()
+    if(user.plan_id === planTest.id) throw notModifiedError()
+    
+    const body = {
+        plan_id:planTest.id,
+        name_plan: planTest.name,
+        name_user:user.name,
+        value: planTest.price,
+        email: user.email,
+        cpf: user.cpf
+    }
+    const logPaymentUser = await sellerRepository.logsPayment(userId)
+
+    try{
+        for(const log of logPaymentUser){
+            const dateString = log.date_of_expiration;  
+            if(log.status_payment === "pending" && isExpired(dateString) === false && log.plan_id === planTest.id) {
+                paymentFound = true;
+                const paymentPlan = await searchPayment(res, log.payment_id);
+                return paymentPlan
+            }
+        }
+        if (!paymentFound) {
+            const payment = await mercadoPago.paymentPix(res, body, userId, next)
+            return payment
+        }
+    }
+    catch(error){
+        console.log(error.message)
+        next(error);
+    }
+}
+
 async function createPaymentToBasic(res: Response, userId: string, next: NextFunction) {
     let paymentFound = false;
     const user = await sellerRepository.findByUserId(userId)
@@ -148,6 +187,7 @@ const planService = {
     createPaymentToBasic,
     createPaymentToPremium,
     createPaymentToMasterRaffle,
+    createPaymentToTest,
     findAllPlans
 }
 export default planService

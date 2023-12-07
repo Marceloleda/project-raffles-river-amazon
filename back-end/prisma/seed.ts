@@ -20,7 +20,7 @@ async function main(){
         },
         {
             name: "Pacote Básico",
-            description: "O Plano Básico é uma opção acessível e funcional para iniciantes que desejam explorar o potencial de vendas em suas campanhas. É uma escolha econômica com recursos adequados para uma operação inicial.",
+            description: "O Plano Básico é uma opção acessível e funcional para iniciantes. É uma escolha econômica com recursos adequados para uma operação inicial.",
             max_campaigns: 3,
             max_tickets: 1000,
             campaign_duration: 60,

@@ -55,16 +55,16 @@ export default function Plans(){
         backgroundColor: isHighlighted ? "#ff847c" : "#f2f2f2",
         }}
         >
-        {isHighlighted && <BestSeller>MAIS COMPRADO</BestSeller>}
+        {isHighlighted && <BestSeller>POPULAR</BestSeller>}
         <PlanName>{plan.name}</PlanName>
-        <PlanPrice>R${plan.price}/mês ou por renovação</PlanPrice>
+        <PlanPrice><p>Pré-pago</p> <br/><h1>R$ {plan.price}</h1> </PlanPrice>
         <PlanDescription>{plan.description}</PlanDescription>
-        <MaxTickets>Saldo de cotas: {plan.max_tickets}</MaxTickets>
-        <ExpireDay>O saldo vence em {plan.campaign_duration} dias</ExpireDay>
-        <MaxCampaign>Limite de campanha: {plan.max_campaigns}</MaxCampaign>
-        <SupportEmail>Suporte via Email: {plan.support_email? "Sim" : "Não"}</SupportEmail>
-        <SupportPhone>Suporte via WhatsApp: {plan.support_phone? "Sim": "Não"}</SupportPhone>
-        <CustomLogo>Customizar a própria logo: {plan.custom_logo? "Sim": "Não"}</CustomLogo>
+        <MaxTickets><p>Saldo de cotas:</p> <h1> {plan.max_tickets}</h1></MaxTickets>
+        <ExpireDay>O saldo vence em <h1>{plan.campaign_duration} dias</h1> </ExpireDay>
+        <MaxCampaign>Limite de campanha: <h1>{plan.max_campaigns}</h1></MaxCampaign>
+        <SupportEmail>Suporte via Email: <h1>{plan.support_email? "Sim" : "Não"}</h1></SupportEmail>
+        <SupportPhone>Suporte via WhatsApp: <h1>{plan.support_phone? "Sim": "Não"}</h1></SupportPhone>
+        <CustomLogo>Customizar a própria logo: <h1>{plan.custom_logo? "Sim": "Não"}</h1></CustomLogo>
           <PurchaseButton onClick={() => handlePurchaseButtonClick(plan)} >
             {plan.name === user?.plans?.name &&  token ? "Renovar" : "Adquirir"}
           </PurchaseButton>
@@ -103,7 +103,7 @@ const PlanCard = styled.div`
   flex-direction: column;
   margin: 15px;
   width: 250px;
-  height: 450px;
+  height: 475px;
   background-color: #f2f2f2;
   border-radius: 40px;
   padding: 20px;
@@ -114,14 +114,11 @@ const PlanCard = styled.div`
   opacity: 0;
   animation: fade-in 0.5s ease-in-out forwards;
   animation-delay: 0ms;
+  transition: box-shadow 0.3s ease, margin-top 0.3s ease;
 
   &:hover {
-    box-shadow: 0 4px 9px rgba(5, 5, 5, 5); /* Aumenta a sombra quando o mouse está sobre a div */
-    padding: 21px;
-    margin-top: -10px;
-
-
-
+    box-shadow: 0 4px 9px rgba(5, 5, 5, 1.5); /* Aumenta a sombra quando o mouse está sobre a div */
+    margin-top: -5px;
   }
 
   @keyframes fade-in {
@@ -137,7 +134,7 @@ const PlanCard = styled.div`
 
 `;
 const BestSeller = styled.p`
-font-size: 13px;
+font-size: 17px;
   font-weight: bold;
   color: yellow;
   background-color: #ff847c;
@@ -145,52 +142,101 @@ font-size: 13px;
   padding: 8px 16px;
   position: absolute;
   top: 0px;
-  right: 48px;
+  right: 40px;
   transform: rotate(45deg) translateX(50%) translateY(-50%);
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
 `;
 
 const PlanName = styled.h3`
-  font-size: 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 15px;
 `;
 
-const PlanPrice = styled.p`
+const PlanPrice = styled.div`
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
-  font-weight: bold;
   margin-bottom: 20px;
+  h1{
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+  }
 
 `;
 
-const PlanDescription = styled.p`
-  font-size: 14px;
-  margin-bottom: 15px;
+const PlanDescription = styled.div`
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-family: 'Open Sans', sans-serif;
+`;
+const MaxTickets = styled.div`
+display: flex;
+font-size: 16px;
+margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
 
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+}
 `;
-const MaxTickets = styled.p`
-font-size: 14px;
+const ExpireDay = styled.div`
+display: flex;
+font-size: 16px;
 margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+  margin-right: 5px;
+
+}
 `;
-const ExpireDay = styled.p`
-font-size: 14px;
+const MaxCampaign = styled.div`
+display: flex;
+font-size: 16px;
 margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
+
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+}
 `;
-const MaxCampaign = styled.p`
-font-size: 14px;
+const SupportEmail = styled.div`
+display: flex;
+font-size: 16px;
 margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
+
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+}
 `;
-const SupportEmail = styled.p`
-font-size: 14px;
+const SupportPhone = styled.div`
+display: flex;
+font-size: 16px;
 margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+}
 `;
-const SupportPhone = styled.p`
-font-size: 14px;
+const CustomLogo = styled.div`
+display: flex;
+font-size: 16px;
 margin-bottom: 10px;
-`;
-const CustomLogo = styled.p`
-font-size: 14px;
-margin-bottom: 10px;
+font-family: 'Open Sans', sans-serif;
+h1{
+  font-weight: bold;
+  margin-left: 5px;
+}
+
 `;
 const PurchaseButton = styled.button`
 background-color: #00cc66; 

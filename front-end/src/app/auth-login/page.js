@@ -9,6 +9,8 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Logo from '../../assets/images/logo_seler.jpeg'
 import Image from "next/image";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 
 
@@ -122,7 +124,7 @@ const Forms = styled.div`
             align-items: center;
             h1{
                 margin-bottom: 30px;
-                font-family: 'Raleway', sans-serif;
+                font-family: 'Montserrat', sans-serif;
                 font-size: 25px;
                 color:black;
             }
@@ -132,13 +134,15 @@ const Forms = styled.div`
 const Inserir = styled.input`
     width:330px;
     height: 58px;
-
+    font-size:18px;
     margin-bottom:16px;
     background: #FFFFFF;
     border: 1px solid #D5D5D5;
     border-radius: 16px;
     padding: 10px;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+
 
     &:first-child{
         margin-top: 25px;
@@ -161,13 +165,12 @@ const Botao = styled.button`
     &:hover{
         background: #419A77;
     }
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     font-weight: 700;
     line-height: 26px;
     text-align: center;
     color: #012C42;
-    font-family: 'Raleway';
 `;
 const Botao2 = styled.button`
     display: flex;
@@ -193,7 +196,7 @@ const Botao2 = styled.button`
 const Cadastro = styled.div`
     margin-top: 35px;
     h2{
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Montserrat', sans-serif;
         color: #333333;
         font-size: 15px;
         font-weight: 700;

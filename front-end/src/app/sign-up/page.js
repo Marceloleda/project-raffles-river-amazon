@@ -5,6 +5,10 @@ import Link from "next/link";
 import { findUser, signUpSend } from "../../services/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import LogoRio from "../../assets/images/logo_main.png"
+import Image from "next/image";
+import { IMaskInput } from "react-imask";
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 export default function Cadastro(){
     const router = useRouter()
@@ -17,7 +21,7 @@ export default function Cadastro(){
         confirmeSenha: ''
     });
     const [passwordError, setPasswordError] = useState(false);
-
+    console.log(cadastro)
   
     useEffect(() => {
       const storedToken = localStorage.getItem('token');
@@ -75,38 +79,98 @@ export default function Cadastro(){
     return(
         <>
             <Conteiner>
-                <h1>Rifas Rio Amazonas</h1>
+            <Image
+               src={LogoRio} 
+               alt="Logo"
+               width={195} 
+               height={195} 
+            />            
+            <h1>Rifas Rio Amazonas</h1>
+            <h2>Preencha os dados abaixo</h2>
                 <Forms>
-                    <form onSubmit={Cadastro}>
-                        <Inserir id="name" placeholder="Nome" value={cadastro.name} onChange={(e)=>
-                        setCadastro({...cadastro, name: e.target.value})
-                        }/>
-                        <Inserir id="email" type="email" placeholder="Email" value={cadastro.email} onChange={(e)=>
-                        setCadastro({...cadastro, email: e.target.value})
-                        }/>
-                        <Inserir id="phone_number" type="phone" placeholder="celular" value={cadastro.phone_number} onChange={(e)=>
-                        setCadastro({...cadastro, phone_number: e.target.value})
-                        }/>
-                        <Inserir id="cpf" type="cpf" placeholder="cpf" value={cadastro.cpf} onChange={(e)=>
-                        setCadastro({...cadastro, cpf: e.target.value})
-                        }/>
-                        <Inserir id="password" type="password" placeholder="Senha" value={cadastro.senha} onChange={(e)=>
-                        setCadastro({...cadastro, senha: e.target.value})
-                        }/>
-                        <Inserir id="confirmPassword" type="password" placeholder="Confirme a senha" value={cadastro.confirmeSenha} onChange={(e)=>
-                        setCadastro({...cadastro, confirmeSenha: e.target.value})
-                        }/>
+                    <FormGroup>
 
-                        {passwordError && (
-                        <ErrorMessage>
-                            {cadastro.senha?.length < 8
-                            ? "A senha deve ter pelo menos 8 caracteres."
-                            : "As senhas não conferem! Coloque as senhas iguais ;-)"}
-                        </ErrorMessage>
-                        )}
+                        <form onSubmit={Cadastro}>
+                            <Inserir 
+                                id="name" 
+                                placeholder="Nome" 
+                                value={cadastro.name} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, name: e.target.value})
+                                }
+                                required
+                            />
+                            <Inserir 
+                                id="email" 
+                                type="email" 
+                                placeholder="Email" 
+                                value={cadastro.email} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, email: e.target.value})
+                                }
+                                required
+                            />
+                            <Inserir 
+                                id="phone_number" 
+                                type="phone" 
+                                placeholder="celular" 
+                                mask="(#0) 00000-0000"
+                                definitions={{
+                                '#': /[1-9]/,
+                                }}
+                                value={cadastro.phone_number} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, phone_number: e.target.value})
+                                }
+                                required
+                            />
+                            <Inserir 
+                                id="cpf" 
+                                mask="000.000.000-00"
+                                type="cpf" 
+                                placeholder="cpf" 
+                                value={cadastro.cpf} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, cpf: e.target.value})
+                            }/>
+                            <Inserir 
+                                id="password" 
+                                type="password" 
+                                placeholder="Senha" 
+                                value={cadastro.senha} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, senha: e.target.value})
+                                }
+                                required
+                            />
+                            <Inserir 
+                                id="confirmPassword" 
+                                type="password" 
+                                placeholder="Confirme a senha" 
+                                value={cadastro.confirmeSenha} 
+                                onChange={(e)=>
+                                setCadastro({...cadastro, confirmeSenha: e.target.value})
+                                }
+                                required
+                            />
 
-                        <Botao type="submit">Cadastar</Botao>
-                    </form>
+                            {passwordError && (
+                            <ErrorMessage>
+                                {cadastro.senha?.length < 8
+                                ? "A senha deve ter pelo menos 8 caracteres."
+                                : "As senhas não conferem! Coloque as senhas iguais ;-)"}
+                            </ErrorMessage>
+                            )}
+                            <Termos>
+                                <FormControlLabel required control={<Checkbox/>} label="Concordo com os seguintes termos" />
+                                <a href="../../../TermosdeServiço.pdf" target="_blank">Texto do Link</a>
+                            </Termos>
+
+
+                            <Botao type="submit">Cadastrar</Botao>
+
+                        </form>
+                    </FormGroup>
                 </Forms>
 
                 <Entrar>
@@ -127,9 +191,15 @@ const Conteiner = styled.div`
     flex-direction: column;
     height: 100vh;
     h1{
-        font-family: 'Raleway', sans-serif;
-        font-size: 32px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 38px;
         color: #333333;
+    }
+    h2{
+        font-family: 'Montserrat', sans-serif;
+        font-size: 24px;
+        color: #333333;
+        margin-top: 25px;
     }
     margin: 0;
     overflow: hidden;
@@ -148,6 +218,11 @@ const Conteiner = styled.div`
       }
 `;
 
+
+const Termos = styled.div`
+    display:flex;
+
+`
 const Forms = styled.div`
     form{
         display:flex;
@@ -156,7 +231,7 @@ const Forms = styled.div`
         align-items: center;
     }
 `
-const Inserir = styled.input`
+const Inserir = styled(IMaskInput)`
     width: 326px;
     height: 58px;
     margin-bottom: 16px;
@@ -165,6 +240,10 @@ const Inserir = styled.input`
     border-radius: 16px;
     padding: 10px;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+
+
     &:first-child{
         margin-top: 25px;
     }

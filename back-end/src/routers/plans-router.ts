@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { authenticateToken } from '../middlewares';
-import { basicPlan, getAllPlans, masterRafflePlan, premiumPlan } from "../controllers";
+import { basicPlan, getAllPlans, masterRafflePlan, premiumPlan, testPlan } from "../controllers";
 
 
 const plansRouter = Router();
+
+plansRouter
+.post('/test', authenticateToken, testPlan)
 
 plansRouter
 .post('/basic', authenticateToken, basicPlan)

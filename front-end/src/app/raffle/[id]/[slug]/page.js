@@ -72,6 +72,7 @@ export default function Page({ params, searchParams }) {
 
     const body = {
       raffleId: params.id,
+      name: raffle.title,
       quantity: defaultValue,
       total: totalPrice,
     };
@@ -156,8 +157,10 @@ export default function Page({ params, searchParams }) {
             />
             <ButtonQuantity onClick={handleIncrement}>+</ButtonQuantity>
           </Quatity>
-          <Total_Value>Total: R$ {totalPrice}</Total_Value>
-          <ResponsiveButtonBuy onClick={modal}>Comprar</ResponsiveButtonBuy>
+          <Total_Value><h1>Total:</h1> <h2> R$ {totalPrice}</h2> </Total_Value>
+          <ResponsiveButtonBuy onClick={modal}>
+            <h1>Comprar</h1>
+            </ResponsiveButtonBuy>
           {showModal && (
             <>
               <BasicModal />
@@ -272,12 +275,18 @@ background-color: rgba(0, 0, 0, 0.55);
 transition: opacity 0.9s;
 `;
 
-const Total_Value = styled.p`
-font-family: 'Roboto', sans-serif;
-margin-bottom: 30px;
-font-size:35px;
-color:black;
-font-weight: bold;
+const Total_Value = styled.div`
+  display:flex;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 30px;
+  
+  h1{
+  font-size: 28px;
+  font-weight: bold;
+  }
+  h2{
+    font-size: 28px;
+  }
 
 `;
 const ImageRaffle = styled.div`
@@ -292,38 +301,41 @@ const ResponsiveImageRaffle = styled(ImageRaffle)`
   }
 `;
 const ButtonBuy = styled.button`
-width:400px;
-height: 50px;
-border-radius: 10px;
-background: #fc923c;
-font-weight: bold;
-margin-bottom: 80px;
-border: none;
-border: 2px solid #f77811 ;
-cursor:pointer;
+  width:400px;
+  height: 50px;
+  border-radius: 25px;
+  background: #fc923c;
+  font-weight: bold;
+  margin-bottom: 80px;
+  border: none;
+  border: 2px solid #f77811 ;
+  cursor:pointer;
+  h1{
+    font-size: 28px;
+    font-weight: bold;
+    }
 
-&:hover{
-  background: #f77811;
+  &:hover{
+    background: #f77811;
 }
 `;
 const ModalPrice = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-font-size: 25px;
-width:auto;
-height: 30px;
-margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  width:auto;
+  height: 30px;
+  margin-bottom: 25px;
 
-background: #fc923c;
-border-radius: 10px;
+  background: #fc923c;
+  border-radius: 10px;
 
 `;
 const ResponsiveButtonBuy = styled(ButtonBuy)`
   @media (max-width: 900px) {
     width:200px;
     margin-bottom: 80px;
-
   }
 `;
 
