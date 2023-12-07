@@ -21,7 +21,6 @@ export default function Cadastro(){
         confirmeSenha: ''
     });
     const [passwordError, setPasswordError] = useState(false);
-    console.log(cadastro)
   
     useEffect(() => {
       const storedToken = localStorage.getItem('token');
