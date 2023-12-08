@@ -13,7 +13,6 @@ async function paymentPix(res:Response, body:payment_body, userId: string, next:
 
     var mercadopago = require('mercadopago');
     mercadopago.configurations.setAccessToken(process.env.TOKEN_MERCADOPAGO_PRODUCTION);
-    
     const decimalPrice = body.value;
     const numberPrice = decimalPrice.toNumber();
 

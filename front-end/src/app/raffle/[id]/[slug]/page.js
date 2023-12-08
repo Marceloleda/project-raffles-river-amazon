@@ -4,54 +4,48 @@ import Galleria from "../../../../components/galleria/index";
 import Logo from '../../../../assets/images/logo_main.png'
 import Link from "next/link";
 import Image from 'next/image';
-import picLogo from '../../../../assets/images/picLogo.png'
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { BasicModal } from '../../../../components/buyerModal/page';
 import Header from '../../../../components/header';
-// import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-// import Typography from '@mui/material/Typography';
-// import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 
- 
+function LinearProgressWithLabel(props) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+      <Box sx={{ width: '100%', mr: 1 }}>
+        <StyledLinearProgress 
+          variant="determinate" 
+          color="success"
+          {...props} 
+        />
+      </Box>
+      <Box sx={{ minWidth: 25 }}>
+        <Typography variant="body1" color="text">{`${Math.round(
+          props.value,
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
 export default function Page({ params, searchParams }) {
-  // const [progress, setProgress] = useState(10);
+  const [progress, setProgress] = useState(0);
   const router = useRouter();
   const [raffle, setRaffle] = useState([]);
   const [defaultValue, setDefaultValue] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-
   const showModal = searchParams?.modal;
-  // function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
-  //   return (
-  //     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-  //       <Box sx={{ width: '100%', mr: 1 }}>
-  //         <LinearProgress variant="determinate" {...props} />
-  //       </Box>
-  //       <Box sx={{ minWidth: 35 }}>
-  //         <Typography variant="body2" color="text.secondary">{`${Math.round(
-  //           props.value,
-  //         )}%`}</Typography>
-  //       </Box>
-  //     </Box>
-  //   );
-  // }
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((prevProgress) => (prevProgress >= 100 ? 10 : prevProgress + 10));
-  //   }, 800);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
 
   useEffect(() => {
     findRaffle(params.id, params.slug)
-      .then((res) => {
-        setRaffle(res.data);
+    .then((res) => {
+      setRaffle(res.data);
+        setProgress(((res.data.total_tickets - res.data.avaliable_tickets) / res.data.total_tickets) * 100);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -134,11 +128,14 @@ export default function Page({ params, searchParams }) {
                 <h2>Descrição: </h2>
                 <h3>{raffle?.description}</h3>
               </div>
+            <Box sx={{ marginTop: "50px"}}>
+              <h2 style={{fontSize: "18px", marginBottom: "5px" }}>Cotas Limitadas! Garanta a Sua Agora e Não Fique de Fora</h2>
+              <LinearProgressWithLabel 
+                value={progress} 
+                />
+              {/* <LinearProgress sx={{ width: "91.7%" }}/> */}
+            </Box>
           </ResponsiveInfoRaffle>
-          {/* <Box sx={{ width: '100%' }}>
-            <LinearProgressWithLabel value={progress} />
-          </Box>
-              <h1>Restam: {raffle?.avaliable_tickets} tickets</h1> */}
           <ResponsiveButtonsPlus>
             <SetNumber onClick={() => handleIncrementSet(5)}>+5</SetNumber>
             <SetNumber onClick={() => handleIncrementSet(10)}>+10</SetNumber>
@@ -172,6 +169,30 @@ export default function Page({ params, searchParams }) {
     </>
   );
 }
+const StyledLinearProgress = styled(LinearProgress)`
+  && {
+    height: 25px;
+    border: 5px double #bbeabe;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #ffffff,
+      #ffffff 10px,
+      #f3f3f3 10px,
+      #f3f3f3 20px
+    );
+    animation: movingStripes 25s linear infinite;
+    background-size: 200% 100%;
+  }
+
+  @keyframes movingStripes {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+`;
 
 
 const Conteiner = styled.div`
@@ -230,15 +251,16 @@ const StyledSpinner = styled.div`
 `;
 const InfoRaffle = styled.div`
   display: flex;
+  flex-direction: column;
   border-radius:10px;
   border: 1px solid black ;
-  // background: #f7ecd2;
-  background: #EAE639;
+  background: #f2ef91;
+  // background: #EAE639;
   margin-top: 25px;
   width: auto;
   max-width: 580px; 
   padding: 15px; 
-
+  min-width: 525px;
   h1 {
     font-family: 'Raleway', sans-serif;
     font-size: 32px;
@@ -258,7 +280,7 @@ const ResponsiveInfoRaffle = styled(InfoRaffle)`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background: #EAE639;
+    background: #f2ef91;
     margin-top: 25px;
     height: 70%;
 
@@ -296,8 +318,6 @@ margin-top: 25px;
 const ResponsiveImageRaffle = styled(ImageRaffle)`
   @media (max-width: 900px) {
     margin-top: 0px;
-
-    
   }
 `;
 const ButtonBuy = styled.button`
@@ -310,6 +330,9 @@ const ButtonBuy = styled.button`
   border: none;
   border: 2px solid #f77811 ;
   cursor:pointer;
+  animation: fade-in 0.6s ease-in-out forwards;
+  animation-delay: 0ms;
+  transition: box-shadow 0.3s ease, background 0.3s ease;
   h1{
     font-size: 28px;
     font-weight: bold;
@@ -317,6 +340,7 @@ const ButtonBuy = styled.button`
 
   &:hover{
     background: #f77811;
+    box-shadow: 0 4px 9px rgba(5, 5, 5, 1.5);
 }
 `;
 const ModalPrice = styled.div`

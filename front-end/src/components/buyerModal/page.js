@@ -38,7 +38,6 @@ function sendBuyTicket(event){
   quantity: dataRaffle.quantity,
   total: dataRaffle.total
   }
-  console.log(body)
 
   buyTicket(body)
   .then((res) => {

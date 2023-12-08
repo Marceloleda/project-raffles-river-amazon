@@ -5,7 +5,6 @@ import sellerRepository from "../../repositories/sellers-repository";
 import { plans } from "@prisma/client";
 import dayjs from "dayjs";
 import { NextFunction, Response } from "express";
-import httpStatus from "http-status";
 
 async function searchPayment(res: Response, payment_id: string) {
     var mercadopago = require('mercadopago');
