@@ -6,6 +6,7 @@ CREATE TABLE "buyer" (
     "full_name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "phone" VARCHAR(20) NOT NULL,
+    "hasWhatsapp" BOOLEAN DEFAULT FALSE,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "buyer_pkey" PRIMARY KEY ("id")

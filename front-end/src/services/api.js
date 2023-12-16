@@ -29,7 +29,7 @@ export function findPlans(){
 }
 
 export function buyTicket(body){
-  return api.post("/buyer/buy", body)
+  return api.post("/buyer/payment", body)
 }
 
 export function findUser(){

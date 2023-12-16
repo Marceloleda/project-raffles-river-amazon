@@ -35,6 +35,7 @@ export type buyData ={
     name: string,
     email: string,
     phone_number: string,
+    hasWhatsapp: boolean,
     idRaffle: string,
     quantity: number,
     total: any

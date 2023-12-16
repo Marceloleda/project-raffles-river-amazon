@@ -26,7 +26,7 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
     
     const raffle = await rafflesRepository.findRaffle(idRaffle)
     const date = dayjs();
-    const expireAt = date.add(10, 'minutes');
+    const expireAt = date.add(15, 'minutes');
 
     const amountNumber = parseFloat(total)
 

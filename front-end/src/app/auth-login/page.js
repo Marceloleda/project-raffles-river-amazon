@@ -9,12 +9,11 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Logo from '../../assets/images/logo_seler.jpeg'
 import Image from "next/image";
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 
 
 
 export default function Login(){
+
     const router = useRouter();
     const [login, setLogin] = useState({
         email: '',
@@ -26,7 +25,7 @@ export default function Login(){
         if(storedToken){
             findUser()
             .then(()=>{
-              router.push("/seller")
+              router.push("/dashboard")
           })
           .catch((err=>{
               localStorage.setItem("token", '')
@@ -42,7 +41,7 @@ export default function Login(){
             api.defaults.headers["Authorization"] = `Bearer ${response.data.Token}`;
             localStorage.setItem("token", response.data.Token)
             alert('logado com sucesso')
-            router.push("/seller");
+            router.push("/dashboard");
         })
             .catch(err => {
             Swal.fire({

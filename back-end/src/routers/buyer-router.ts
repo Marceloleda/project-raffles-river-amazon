@@ -3,11 +3,11 @@ import { Router } from "express";
 import { buyTicket } from "../controllers/buyer -controller";
 
 
-const buyRouter = Router();
+const buyerRouter = Router();
 
-buyRouter
-.post('/buy', buyTicket)
+buyerRouter
+.post('/payment', buyTicket)
 
 
 
-export { buyRouter}
+export { buyerRouter}

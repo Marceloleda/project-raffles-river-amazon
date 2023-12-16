@@ -129,7 +129,7 @@ export default function Page({ params, searchParams }) {
                 <h3>{raffle?.description}</h3>
               </div>
             <Box sx={{ marginTop: "50px"}}>
-              <h2 style={{fontSize: "18px", marginBottom: "5px" }}>Cotas Limitadas! Garanta a Sua Agora e Não Fique de Fora</h2>
+              <h2 style={{fontSize: "18px", marginBottom: "5px" }}>COTAS LIMITADAS! Garanta a sua agora e não fique de fora!</h2>
               <LinearProgressWithLabel 
                 value={progress} 
                 />
@@ -389,7 +389,7 @@ const InputQuantity = styled.input`
 display:flex;
 align-items: center;
 text-align: center;
-width:80px;
+width:180px;
 height: 50px;
 border-radius: 15px;
 border: none;
@@ -398,7 +398,7 @@ font-size: 25px;
 const Quatity = styled.div`
 display:flex;
 justify-content: space-around;
-width: 300px;
+width: 400px;
 height: 80px;
 `;
 const SetNumber = styled.button`

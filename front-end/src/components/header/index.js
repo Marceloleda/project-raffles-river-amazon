@@ -34,17 +34,20 @@ export default function Header(){
             />
             <h1>Rifas Rio Amazonas</h1>
                 {token? 
-                <Link href="/seller" style={{ textDecoration: 'none' }}><h2>Meu Painel</h2></Link> :
-
-                <Link href="/auth-login" style={{ textDecoration: 'none' }}>
-                    <Image
-                        src={LoginPng} 
-                        alt="Logo"
-                        width={55} 
-                        height={55} 
-                    />
-                    <h2>Login</h2>
-                </Link>
+                <Link href="/dashboard" style={{ textDecoration: 'none' }}><h2>Meu Painel</h2></Link> :
+                
+                <Login>
+                    <Link href="/auth-login" style={{ textDecoration: 'none' }}>
+                        <Image
+                            src={LoginPng} 
+                            alt="Logo"
+                            width={45} 
+                            height={45} 
+                            style={{marginLeft: "9px"}}
+                        />
+                        <h2>Login</h2>
+                    </Link>
+                </Login>
                 }
         </ConteinerHeader>
     )
@@ -71,7 +74,35 @@ const ConteinerHeader = styled.div`
     h2{
         font-size: 25px; 
         color: black; 
-        margin-left:-5px;
     }
 
+`;
+
+const Login = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 95px;
+height:95px;
+margin: 0px;
+opacity: 0;
+animation: fade-in 0.5s ease-in-out forwards;
+animation-delay: 1ms;
+transition: box-shadow 0.3s ease;
+border-radius: 30px;
+&:hover {
+  box-shadow: 0 4px 9px rgba(5, 5, 5, 1.5); /* Aumenta a sombra quando o mouse está sobre a div */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 `;

@@ -23,7 +23,7 @@ export default function CreateCampaign() {
       createRaffle({...campaignData, total_tickets: totalTicketsNumber})
         .then((res) => {
           Swal.fire('Cadastrado com sucesso!', '', 'success');
-          router.push("/seller")
+          router.push("/dashboard")
         })
         .catch((err) => {
           if (err.message === "Request failed with status code 403") {

@@ -8,7 +8,7 @@ import { buyTicket } from "../../services/api";
 import Logopix from "../../assets/images/pixLogo.png"
 import LogoWhats from "../../assets/images/whats184.png"
 import Image from "next/image";
-import { Alert, AlertTitle } from '@mui/material';
+import { Alert, AlertTitle, Checkbox, FormControlLabel, FormHelperText } from '@mui/material';
 
 
 export function BasicModal() {
@@ -25,9 +25,9 @@ export function BasicModal() {
   const [buyer, setBuyer] = useState({
     name: '',
     email: '',
-    phone_number:''
+    phone_number:'',
+    hasWhatsapp: false
 })
-
 
 function sendBuyTicket(event){
   event.preventDefault();
@@ -86,6 +86,17 @@ function sendBuyTicket(event){
                             setBuyer({...buyer, phone_number: e.target.value})
                           }required
                         />
+                          <FormControlLabel
+                          label="Receber dados desta compra no WhatsApp?"
+                          control={
+                            <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
+                              setBuyer({...buyer, hasWhatsapp: e.target.checked})
+                            } name="whatsapp" />
+                          }
+                          />
+                          <FormHelperText>É necessário que o número tenha WhatsApp</FormHelperText>
+
+
 
                         <DadosPagamento>
                           <h1>Detalhes da compra:</h1>
@@ -103,19 +114,22 @@ function sendBuyTicket(event){
                             height={75} 
                             style={{ marginBottom: '25px' }}
                           />
-                          <Popup>
-                            <Alert severity="warning">
-                              <AlertTitle>Aviso</AlertTitle>
-                              <Image
-                                  src={LogoWhats} 
-                                  alt="whatsapp"
-                                  width={35} 
-                                  height={35} 
-                                />
-                              <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
+                          {buyer.hasWhatsapp && buyer.hasWhatsapp === true?
+                            <Popup>
+                              <Alert severity="warning">
+                                <AlertTitle>Aviso</AlertTitle>
+                                <Image
+                                    src={LogoWhats} 
+                                    alt="whatsapp"
+                                    width={35} 
+                                    height={35} 
+                                  />
+                                <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
 
-                            </Alert>
-                          </Popup>
+                              </Alert>
+                            </Popup>
+                            : <></>
+                          }
 
                           <Alert severity="info">
                             <AlertTitle>Informação</AlertTitle>                            
@@ -227,7 +241,7 @@ const DadosPagamento = styled.div`
     margin-bottom: 40px;
     }
   h2{
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
       margin-bottom: 16px;
     }

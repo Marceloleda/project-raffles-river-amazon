@@ -27,7 +27,7 @@ export default function Cadastro(){
       if(storedToken){
           findUser()
           .then(()=>{
-            router.push("/seller")
+            router.push("/dashboard")
         })
         .catch((err=>{
             localStorage.setItem("token", '')
@@ -162,7 +162,7 @@ export default function Cadastro(){
                             )}
                             <Termos>
                                 <FormControlLabel required control={<Checkbox/>} label="Concordo com os seguintes termos" />
-                                <a href="../../../TermosdeServiço.pdf" target="_blank">Texto do Link</a>
+                                <a href="./TermosdeServico.pdf" target="_blank">Termos Rifas Rio Amazonas</a>
                             </Termos>
 
 
@@ -188,7 +188,7 @@ const Conteiner = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     h1{
         font-family: 'Montserrat', sans-serif;
         font-size: 38px;
@@ -201,20 +201,7 @@ const Conteiner = styled.div`
         margin-top: 25px;
     }
     margin: 0;
-    overflow: hidden;
-    height: 100vh;
     width: 100%;
-    background: linear-gradient(to bottom, #b3d0f7 0%, #7aa9eb 50%, #b3d0f7 100%);
-    background-size: 100% 200%;
-    animation: riverFlow 10s linear infinite;
-    @keyframes riverFlow {
-        0%, 100% {
-          background-position: 0 0;
-        }
-        50% {
-          background-position: 0 100%;
-        }
-      }
 `;
 
 
@@ -267,8 +254,10 @@ const Botao = styled.button`
 `;
 const Entrar = styled.div`
     margin-top: 35px;
+    margin-bottom: 55px;
+
     h2{
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Montserrat', sans-serif;
         color: #333333;
         font-size: 20px;
         font-weight: 700;
