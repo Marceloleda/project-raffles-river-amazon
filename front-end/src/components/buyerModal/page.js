@@ -48,8 +48,9 @@ function sendBuyTicket(event){
     // router.push(`${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`)
   })
   .catch(err => {
-    console.log(err)
+    console.log(err.message)
     setIsloading(false);
+
   });
 }
 

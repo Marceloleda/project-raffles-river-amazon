@@ -51,16 +51,16 @@ const message = `
 Olá, *${name}*! 🤩\n  
 Você já está concorrendo! 🎉\n
 
-${firstNumbers.length > 1? `Seus números da sorte são: ${firstNumbers} `: `Seu número é : ${firstNumbers}`} \n
+${firstNumbers.length > 1? `Seus números da sorte são: *${firstNumbers}* `: `Seu número é : *${firstNumbers}*`} \n
         
         
 Aproveite este momento especial e junte-se a nós para uma jornada única!\n
 
-*1º* - Acesse o link abaixo para entrar no grupo do WhatsApp\n
-*2º* - Leia as regras do grupo\n
+*1º* - Acesse o link abaixo para entrar no canal do WhatsApp\n
+*2º* - Leia as informações do canal\n
 *3º* - Aguarde o sorteio\n
 
-link do grupo whatsapp: https://chat.whatsapp.com/... \n
+link do canal whatsapp: https://whatsapp.com/channel/0029Va8EXUp2Jl8J8SoGrR1h \n
         
 *Vejo você lá!* 🥳
         
@@ -84,12 +84,12 @@ _Serviço automático, não responda_`;
 async function checkPhone(phone: string | null) {
     try {
       const number = await formatNumberWhatsapp({ numero: phone });
-  
+      
       const response = await axios.get(
         `${api_whatsapp}/misc/onwhatsapp?key=${key}&id=${number}`,
         { headers }
       );
-      // console.log('Número existe:', response?.data?.data);
+      console.log('Número existe:', response?.data?.data);
       return response?.data?.data;
     } catch (error) {
       console.error('Número não existe:', error?.response?.data);

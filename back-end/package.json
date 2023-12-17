@@ -18,8 +18,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Marcelo Ferreira Leda Filho <marcelo.leda@icomp.ufam.edu.br>",
+  "license": "MIT",
   "dependencies": {
     "@brazilian-utils/brazilian-utils": "^1.0.0-rc.12",
     "@mercadopago/sdk-js": "^0.0.2",
