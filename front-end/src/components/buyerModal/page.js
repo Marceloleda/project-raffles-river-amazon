@@ -4,16 +4,23 @@ import { IMaskInput } from 'react-imask';
 import { styled } from "styled-components"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { buyTicket } from "../../services/api";
+import { buyTicket, checkWhatsappPhone } from "../../services/api";
 import Logopix from "../../assets/images/pixLogo.png"
 import LogoWhats from "../../assets/images/whats184.png"
 import Image from "next/image";
 import { Alert, AlertTitle, Checkbox, FormControlLabel, FormHelperText } from '@mui/material';
 
-
 export function BasicModal() {
   let dataRaffle
+  const [buyer, setBuyer] = useState({
+    name: '',
+    email: '',
+    phone_number:'',
+    hasWhatsapp: false
+})
   const [isLoading, setIsloading] = useState(false);
+  const [whatsappExist, setWhatsappExist] = useState(true);
+
   const [payment, setPayment] = useState()
   const [raffle, setRaffle] = useState({})
 
@@ -22,12 +29,6 @@ export function BasicModal() {
     dataRaffle = JSON.parse(bodyString);
   }
   const router =useRouter()
-  const [buyer, setBuyer] = useState({
-    name: '',
-    email: '',
-    phone_number:'',
-    hasWhatsapp: false
-})
 
 function sendBuyTicket(event){
   event.preventDefault();
@@ -39,19 +40,55 @@ function sendBuyTicket(event){
   total: dataRaffle.total
   }
 
-  buyTicket(body)
-  .then((res) => {
-    const mercadoPago = res.data
-    // router.push(`/payment-buyer/${mercadoPago.id}`)
-    setIsloading(false);
-    window.open(`${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`, '_blank');
-    // router.push(`${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`)
-  })
-  .catch(err => {
-    console.log(err.message)
-    setIsloading(false);
 
-  });
+  if (body.hasWhatsapp === true) {
+    checkWhatsappPhone(body.phone_number)
+      .then((res) => {
+        if (res.data === true) {
+          // O número de WhatsApp existe, então podemos prosseguir com a compra
+
+          buyTicket(body)
+            .then((res) => {
+              const mercadoPago = res.data;
+              setIsloading(false);
+              window.open(
+                `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
+                '_blank'
+              );
+              // router.push(`/payment-buyer/${mercadoPago.id}`)
+            })
+            .catch((err) => {
+              console.log(err.message);
+              setIsloading(false);
+            });
+        } else {
+          // O número de WhatsApp não existe, você pode tratar isso aqui se necessário
+          setWhatsappExist(res.data);
+          setIsloading(false);
+          // console.log("Número de WhatsApp não existe");
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setIsloading(false);
+      });
+  } else {
+    // Se o usuário não optou por receber via WhatsApp, prossiga com a compra
+    buyTicket(body)
+      .then((res) => {
+        const mercadoPago = res.data;
+        setIsloading(false);
+        window.open(
+          `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
+          '_blank'
+        );
+        // router.push(`/payment-buyer/${mercadoPago.id}`)
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setIsloading(false);
+      });
+  }
 }
 
     return (
@@ -64,12 +101,14 @@ function sendBuyTicket(event){
                     <form onSubmit={sendBuyTicket}>
                         <Inserir 
                           id="name" 
+                          $isloading={isLoading}
                           placeholder="Nome completo" 
                           value={buyer.name} onChange={(e)=>
                           setBuyer({...buyer, name: e.target.value})
                         } required/>
                         <Inserir 
                           id="email" 
+                          $isloading={isLoading}
                           type="email" 
                           placeholder="Email" 
                           value={buyer.email} onChange={(e)=>
@@ -77,27 +116,44 @@ function sendBuyTicket(event){
                           }required
                           />
                         <Inserir
-                          id="phone_number"
+                          id="phone"
+                          $isloading={isLoading}
                           placeholder="(99) 99999-9999"
                           mask="(#0) 00000-0000"
                           definitions={{
                             '#': /[1-9]/,
                           }}
-                          value={buyer.phone_number} onChange={(e)=>
-                            setBuyer({...buyer, phone_number: e.target.value})
-                          }required
+                          value={buyer.phone_number}
+                          onChange={(e) => setBuyer({ ...buyer, phone_number: e.target.value })}
+                          onAccept={(value) => setBuyer({ ...buyer, phone_number: value })}
+                          required
                         />
-                          <FormControlLabel
-                          label="Receber dados desta compra no WhatsApp?"
-                          control={
-                            <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
-                              setBuyer({...buyer, hasWhatsapp: e.target.checked})
-                            } name="whatsapp" />
+
+                          {isLoading === true? 
+                            <FormControlLabel
+                            label="Receber dados desta compra no WhatsApp?"
+                            disabled
+                            control={
+                              <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
+                                setBuyer({...buyer, hasWhatsapp: e.target.checked})
+                              } name="whatsapp" />
+                            }
+                            />
+                          : 
+                            <FormControlLabel
+                            label="Receber dados desta compra no WhatsApp?"
+                            control={
+                              <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
+                                setBuyer({...buyer, hasWhatsapp: e.target.checked})
+                              } name="whatsapp" />
+                            }
+                            />
                           }
-                          />
+                          {whatsappExist? 
                           <FormHelperText>É necessário que o número tenha WhatsApp</FormHelperText>
-
-
+                          :
+                          <FormHelperText style={{color: "red", fontSize: '15px'}}>Adicione um número válido, que tenha WhatsApp</FormHelperText>
+                          }
 
                         <DadosPagamento>
                           <h1>Detalhes da compra:</h1>
@@ -115,6 +171,13 @@ function sendBuyTicket(event){
                             height={75} 
                             style={{ marginBottom: '25px' }}
                           />
+
+                          <Popup>
+                            <Alert severity="info">
+                              <AlertTitle>Informação</AlertTitle>                            
+                              <h3>No momento estamos aceitando somente pagamentos via Pix. <br/> <br/>Agradeço a compreensão.</h3>
+                            </Alert>
+                          </Popup>
                           {buyer.hasWhatsapp && buyer.hasWhatsapp === true?
                             <Popup>
                               <Alert severity="warning">
@@ -131,11 +194,11 @@ function sendBuyTicket(event){
                             </Popup>
                             : <></>
                           }
-
-                          <Alert severity="info">
-                            <AlertTitle>Informação</AlertTitle>                            
-                            <h3>No momento estamos aceitando somente pagamentos via Pix. <br/> <br/>Agradeço a compreensão.</h3>
-                          </Alert>
+                          {whatsappExist?
+                          ""
+                          : 
+                          <Alert severity="error">Este número não tem WhatsApp!</Alert>
+                          }
                         </DadosPagamento>
 
                         <Botao type="submit" $isloading={isLoading} disabled={isLoading}>{
@@ -301,24 +364,29 @@ const Forms = styled.div`
         }
 `;
 const Inserir = styled(IMaskInput)`
-    width: 100%;
-    height: 58px;
-    font-size: 18px;
-    margin-bottom: 16px;
-    background: #FFFFFF;
-    border: 1px solid #D5D5D5;
-    border-radius: 20px;
-    padding: 10px;
-    box-sizing: border-box;
-    &:first-child{
-        margin-top: 25px;
-    }
+width: 100%;
+height: 58px;
+font-size: 18px;
+margin-bottom: 16px;
+background-color: ${(props) => (props.$isloading ? '#F5F5F5' : '#FFFFFF')};
+border: 1px solid #D5D5D5;
+border-radius: 20px;
+padding: 10px;
+box-sizing: border-box;
+pointer-events: ${(props) => (props.$isloading ? 'none' : 'auto')};
+cursor: ${(props) => (props.$isloading ? 'not-allowed' : 'text')};
+opacity: ${(props) => (props.$isloading ? '0.7' : '1')};  
+
+&:first-child {
+    margin-top: 25px;
+}
+
 `;
 const Botao = styled.button`
 display: flex;
 justify-content: center;
 align-items: center;
-margin-top: 20px;
+margin-top: 5px;
 margin-bottom: 20px;
 width: 100%;
 height: 46px;

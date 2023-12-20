@@ -10,7 +10,8 @@ import {
   rafflesRouter, 
   selllerRouter, 
   signUpRouter, 
-  webhookRouter
+  webhookRouter,
+  whatsappBotRouter
 } from './routers';
 
 
@@ -28,6 +29,7 @@ app
   .use('/mercadopago', webhookRouter)
   .use('/seller', selllerRouter)
   .use('/buyer', buyerRouter)
+  .use('/whatsapp-bot', whatsappBotRouter)
   .use(handleApplicationErrors);
 
 

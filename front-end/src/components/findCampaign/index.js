@@ -2,6 +2,9 @@ import { deleteOneRaffle, findCampaigns } from "../../services/api";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useRouter } from 'next/navigation';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import { IconButton, Skeleton } from "@mui/material";
 
 export default function FindCampaign() {
   const router = useRouter();
@@ -43,7 +46,10 @@ export default function FindCampaign() {
         <h2>Valor: R$ {data.ticket_price}</h2>
         <h3>Expira em: {data.expire_at}</h3>
         <Button onClick={() => handleViewRaffle(data.id, data.title)}>Ver pagina da Rifa</Button>
-        <DeleteButton onClick={() => deleteRaffle(data.id)}>Excluir Rifa</DeleteButton>
+        <DeleteButton onClick={() => deleteRaffle(data.id)}>
+          <DeleteIcon/>
+            Excluir Rifa
+        </DeleteButton>
       </Raffle>
     );
   });
@@ -51,11 +57,14 @@ export default function FindCampaign() {
   return (
   <>
     {isLoading ? (
-        <SpinnerContainer>
-          <StyledSpinner />
-        </SpinnerContainer>
+      <Container>
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:10, padding:"20px", margin: 5 , position: "relative"}} animation="wave" variant="rectangular" />
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:10, padding:"20px", margin: 5, position: "relative"}} animation="wave" variant="rectangular" />
+      </Container>
       ) : (
-    <Container>{rafflesCard}</Container>
+    <Container>
+      {rafflesCard}
+    </Container>
     )}
 
   </>
@@ -106,10 +115,10 @@ const StyledSpinner = styled.div`
   }
 `;
 const DeleteButton = styled.button`
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  height: 30px;
   background-color: #ff847c;
   color: #ffffff;
   border: none;
@@ -125,11 +134,11 @@ const DeleteButton = styled.button`
 `;
 
 const Button = styled.button`
-  position: absolute;
-  width: 70%;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  margin-top: 90px;
+  margin-bottom: 10px;
+  height: 60px;
+
   background-color: #56bc86;
   color: #ffffff;
   border: none;

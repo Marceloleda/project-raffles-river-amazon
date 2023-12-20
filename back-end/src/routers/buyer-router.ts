@@ -9,5 +9,4 @@ buyerRouter
 .post('/payment', buyTicket)
 
 
-
 export { buyerRouter}

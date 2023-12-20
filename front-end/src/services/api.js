@@ -4,13 +4,17 @@ import axios from "axios";
 //DEV
 // const URL = "http://localhost:5000";
 let TOKEN;
+
 const URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const URLWHATSAPP = process.env.NEXT_PUBLIC_API_WHATSAPP_URL || "http://www.rifasrioamazonas.com.br/whatsapp-bot";
+
 export const api = axios.create({ baseURL: URL });
 
 if (typeof window !== 'undefined') {
   TOKEN = localStorage.getItem('token');
 }
 api.defaults.headers["Authorization"] = `Bearer ${TOKEN}`;
+
 
 export function signUpSend(body) {
   return api.post("/sign-up", body);
@@ -50,4 +54,8 @@ export function findRaffle(raffleId, slug){
 
 export function deleteOneRaffle(id){
   return api.delete(`/raffle/delete/${id}`)
+}
+
+export function checkWhatsappPhone(phone){
+  return api.get(`/whatsapp-bot/check-phone/${phone}`)
 }

@@ -330,8 +330,6 @@ const ButtonBuy = styled.button`
   border: none;
   border: 2px solid #f77811 ;
   cursor:pointer;
-  animation: fade-in 0.6s ease-in-out forwards;
-  animation-delay: 0ms;
   transition: box-shadow 0.3s ease, background 0.3s ease;
   h1{
     font-size: 28px;
@@ -340,7 +338,7 @@ const ButtonBuy = styled.button`
 
   &:hover{
     background: #f77811;
-    box-shadow: 0 4px 9px rgba(5, 5, 5, 1.5);
+    box-shadow: 0 1px 2px rgba(1, 1, 1, 1.5);
 }
 `;
 const ModalPrice = styled.div`
