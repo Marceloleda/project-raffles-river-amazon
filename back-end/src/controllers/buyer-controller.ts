@@ -1,4 +1,3 @@
-import whatsappApi from "@/services/whatsapp-api-service";
 import { buyData } from "../protocols";
 import buyerService from "../services/buyer-service";
 import { NextFunction, Request, Response } from "express"

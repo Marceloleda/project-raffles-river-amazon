@@ -1,6 +1,6 @@
 import { Router } from "express";
 // import { authenticateToken } from '@/middlewares';
-import { buyTicket, findTicket } from "../controllers/buyer -controller";
+import { buyTicket, findTicket } from "../controllers/buyer-controller";
 
 
 const buyerRouter = Router();
