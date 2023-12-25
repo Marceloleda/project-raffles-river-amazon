@@ -1,208 +1,154 @@
 'use client'
-import { buyTicket, findRaffle } from '../../../../services/api';
-import Galleria from "../../../../components/galleria/index";
 import Logo from '../../../../assets/images/logo_main.png'
-import Link from "next/link";
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { styled } from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { BasicModal } from '../../../../components/buyerModal/page';
-import Header from '../../../../components/header';
-import LinearProgress from '@mui/material/LinearProgress';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import MenuIcon from '@mui/icons-material/Menu';
+import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SwipeableDrawer } from '@mui/material';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+import ShareIcon from '@mui/icons-material/Share';
+import Raffle from '../../../../components/buyerRaffle/index';
+import FindTickets from '../../../../components/findTickets/index';
 
 
-function LinearProgressWithLabel(props) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-      <Box sx={{ width: '100%', mr: 1 }}>
-        <StyledLinearProgress 
-          variant="determinate" 
-          color="success"
-          {...props} 
-        />
-      </Box>
-      <Box sx={{ minWidth: 25 }}>
-        <Typography variant="body1" color="text">{`${Math.round(
-          props.value,
-        )}%`}</Typography>
-      </Box>
+
+export default function RafflePagePrincipal({ params, searchParams }) {
+  const [showFindPurchase, setShowFindPurchase] = useState(false);
+  const [showRaffle, setShowRaffle] = useState(true);
+
+  const [state, setState] = useState({
+    right: false,
+  });
+
+  const handleFindTickets = () => {
+    setShowRaffle(false)
+    setShowFindPurchase(true);
+  };
+
+  const handleRaffle = () => {
+    setShowRaffle(true);
+  };
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    // 'Compartilhe e ganhe!'
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {['Meus Bilhetes'].map((text, index) => (
+          <ListItem key={text} >
+            <ListItemButton onClick={()=> {
+                if(text === 'Meus Bilhetes'){
+                  handleFindTickets()
+                }
+              }}>
+              <ListItemIcon>
+                {index % 2 === 0 ? <LocalActivityIcon /> : <ShareIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      {/* <List>
+        {['Suporte'].map((text, index) => (
+          <ListItem key={text} >
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <MailIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List> */}
     </Box>
   );
-}
-
-export default function Page({ params, searchParams }) {
-  const [progress, setProgress] = useState(0);
-  const router = useRouter();
-  const [raffle, setRaffle] = useState([]);
-  const [defaultValue, setDefaultValue] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const showModal = searchParams?.modal;
-
-  useEffect(() => {
-    findRaffle(params.id, params.slug)
-    .then((res) => {
-      setRaffle(res.data);
-        setProgress(((res.data.total_tickets - res.data.avaliable_tickets) / res.data.total_tickets) * 100);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setIsLoading(false);
-      });
-  }, []);
-
-  const totalPrice = (defaultValue * raffle.ticket_price).toFixed(2); 
-
-  const modal = () => {
-    if(defaultValue < 1){
-      return alert("É NECESSARIO A QUANTIDADE DE PELO MENOS 1 NÚMERO DA SORTE")
-    }
-    if(defaultValue > raffle?.avaliable_tickets){
-      return alert("NÃO É POSSIVEL COMPRAR ESSA QUANTIDADE")
-    }
-
-    const body = {
-      raffleId: params.id,
-      name: raffle.title,
-      quantity: defaultValue,
-      total: totalPrice,
-    };
-    const bodyString = JSON.stringify(body);
-    localStorage.setItem("bodyRaffle", bodyString);
-
-    router.push(`${params.slug}/?modal=true`);
-  };
-
-  const handleIncrementSet = (value) => {
-    setDefaultValue(defaultValue + value);
-  };
-
-  const handleIncrement = () => {
-    setDefaultValue(defaultValue + 1);
-  };
-
-  const handleDecrement = () => {
-    if (defaultValue > 0) {
-      setDefaultValue(defaultValue - 1);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const parsedValue = parseFloat(e.target.value);
-
-    if (!isNaN(parsedValue) && parsedValue >= 0) {
-      setDefaultValue(parsedValue);
-    }
-  };
 
   return (
-    <>
-      {isLoading ? (
-        <SpinnerContainer>
-          <StyledSpinner />
-        </SpinnerContainer>
-      ) : (
-        <Conteiner>
-          <ConteinerHeader>
+        <>
+          <ResponsiveConteinerHeader>
             <Image
                src={Logo} 
                alt="Logo"
-               width={75} 
-               height={75}
+               width={70} 
+               height={70}
                style={{marginRight: "60px"}} 
             />
-            <h1>Rifas Rio Amazonas</h1>
-        </ConteinerHeader>
-          <ResponsiveImageRaffle>
-            <Galleria/>
-          </ResponsiveImageRaffle>
-          <ResponsiveInfoRaffle>
-              <div>
-                <h1>{raffle?.title}</h1>
-                <ModalPrice>
-                  R$ {raffle?.ticket_price}
-                </ModalPrice>
-                <h2>Descrição: </h2>
-                <h3>{raffle?.description}</h3>
-              </div>
-            <Box sx={{ marginTop: "50px"}}>
-              <h2 style={{fontSize: "18px", marginBottom: "5px" }}>COTAS LIMITADAS! Garanta a sua agora e não fique de fora!</h2>
-              <LinearProgressWithLabel 
-                value={progress} 
-                />
-              {/* <LinearProgress sx={{ width: "91.7%" }}/> */}
-            </Box>
-          </ResponsiveInfoRaffle>
-          <ResponsiveButtonsPlus>
-            <SetNumber onClick={() => handleIncrementSet(5)}>+5</SetNumber>
-            <SetNumber onClick={() => handleIncrementSet(10)}>+10</SetNumber>
-            <SetNumber onClick={() => handleIncrementSet(20)}>+20</SetNumber>
-          </ResponsiveButtonsPlus>
+            <h1>Rifas Rio<br/> Amazonas</h1>
+            
+            <ResponsiveMenuHeader >
+                  <MenuIcon fontSize='large' onClick={toggleDrawer('right', true)}/>
+                  <SwipeableDrawer
+                    anchor={'right'}
+                    open={state['right']}
+                    onClose={toggleDrawer('right', false)}
+                    onOpen={toggleDrawer('right', true)}
+                  >
+                    {list('right')}
+                  </SwipeableDrawer>
+              </ResponsiveMenuHeader>
+          </ResponsiveConteinerHeader>
+          {showFindPurchase && <FindTickets/>}
+          {showRaffle && <Raffle  params={params} searchParams={searchParams}/>}
 
-          <Quatity>
-            <ButtonQuantity onClick={handleDecrement}>-</ButtonQuantity>
-            <InputQuantity
-              type="text" 
-              value={defaultValue}
-              onChange={handleInputChange}
-              min="0"
-              inputMode="numeric" 
-              pattern="\d*" 
-            />
-            <ButtonQuantity onClick={handleIncrement}>+</ButtonQuantity>
-          </Quatity>
-          <Total_Value><h1>Total:</h1> <h2> R$ {totalPrice}</h2> </Total_Value>
-          <ResponsiveButtonBuy onClick={modal}>
-            <h1>Comprar</h1>
-            </ResponsiveButtonBuy>
-          {showModal && (
-            <>
-              <BasicModal />
-              <Overlay />
-            </>
-          )}
-        </Conteiner>
-      )}
-    </>
+        </>
   );
 }
-const StyledLinearProgress = styled(LinearProgress)`
-  && {
-    height: 25px;
-    border: 5px double #bbeabe;
-    background-image: repeating-linear-gradient(
-      45deg,
-      #ffffff,
-      #ffffff 10px,
-      #f3f3f3 10px,
-      #f3f3f3 20px
-    );
-    animation: movingStripes 25s linear infinite;
-    background-size: 200% 100%;
+
+const MenuHeader = styled.div`
+  display: flex;
+  height: 35px;
+  width: 35px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  animation: fade-in 0.5s ease-in-out forwards;
+  animation-delay: 1ms;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover{
+    box-shadow: 0 1px 4px rgba(5, 5, 5, 1.5); 
   }
 
-  @keyframes movingStripes {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
+`;
+const ResponsiveMenuHeader = styled(MenuHeader)`
+@media (max-width: 460px) {
+  height: 30px;
+  width: 30px;
+  border-radius: 0%;
+  animation: fade-in 0s ease-in-out forwards;
+  animation-delay: 0ms;
+  transition: box-shadow 0s ease;
+  &:hover{
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0); 
+
   }
+
+}
 `;
 
-
-const Conteiner = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f7f2e6;
-    flex-direction: column;
-    min-height: 100vh; 
-`;
 const ConteinerHeader = styled.div`
     position: top;
     background-color: #D6E5E3; 
@@ -217,7 +163,6 @@ const ConteinerHeader = styled.div`
         font-family: 'Nunito', sans-serif;
         font-size: 40px; 
         font-weight: 700;
-
     }
     h2{
         font-size: 25px; 
@@ -225,6 +170,31 @@ const ConteinerHeader = styled.div`
     }
 
 `;
+
+const ResponsiveConteinerHeader = styled(ConteinerHeader)`
+  @media (max-width: 900px) {
+    h1 {
+      font-size: 22px;
+      margin-right: 10px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+
+    img {
+      width: 60px; /* Ajuste o tamanho conforme necessário */
+      height: 60px; /* Ajuste o tamanho conforme necessário */
+      margin-right: 10px;
+    }
+  }
+
+  @media (max-width: 315px) {
+    width: 315px;
+
+  }
+`;
+
 const SpinnerContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -249,186 +219,5 @@ const StyledSpinner = styled.div`
     }
   }
 `;
-const InfoRaffle = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-radius:10px;
-  border: 1px solid black ;
-  background: #f2ef91;
-  // background: #EAE639;
-  margin-top: 25px;
-  width: auto;
-  max-width: 580px; 
-  padding: 15px; 
-  min-width: 525px;
-  h1 {
-    font-family: 'Raleway', sans-serif;
-    font-size: 32px;
-    color: black;
-    margin-bottom: 25px;
-  }
-  
-  h2 {
-    font-family: 'Raleway', sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-  }
-`;
 
-const ResponsiveInfoRaffle = styled(InfoRaffle)`
-  @media (max-width: 900px) {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background: #f2ef91;
-    margin-top: 25px;
-    height: 70%;
-
-    padding: 15px; 
-    width: 85%; 
-    max-width: 580px; 
-    min-width: 315px; 
-  }
-`;
-const Overlay = styled.div`
-position: fixed;
-inset: 0;
-background-color: rgba(0, 0, 0, 0.55);
-transition: opacity 0.9s;
-`;
-
-const Total_Value = styled.div`
-  display:flex;
-  font-family: 'Roboto', sans-serif;
-  margin-bottom: 30px;
-  
-  h1{
-  font-size: 28px;
-  font-weight: bold;
-  }
-  h2{
-    font-size: 28px;
-  }
-
-`;
-const ImageRaffle = styled.div`
-margin-top: 25px;
-
-`;
-const ResponsiveImageRaffle = styled(ImageRaffle)`
-  @media (max-width: 900px) {
-    margin-top: 0px;
-  }
-`;
-const ButtonBuy = styled.button`
-  width:400px;
-  height: 50px;
-  border-radius: 25px;
-  background: #fc923c;
-  font-weight: bold;
-  margin-bottom: 80px;
-  border: none;
-  border: 2px solid #f77811 ;
-  cursor:pointer;
-  transition: box-shadow 0.3s ease, background 0.3s ease;
-  h1{
-    font-size: 28px;
-    font-weight: bold;
-    }
-
-  &:hover{
-    background: #f77811;
-    box-shadow: 0 1px 2px rgba(1, 1, 1, 1.5);
-}
-`;
-const ModalPrice = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 25px;
-  width:auto;
-  height: 30px;
-  margin-bottom: 25px;
-
-  background: #fc923c;
-  border-radius: 10px;
-
-`;
-const ResponsiveButtonBuy = styled(ButtonBuy)`
-  @media (max-width: 900px) {
-    width:200px;
-    margin-bottom: 80px;
-  }
-`;
-
-const ButtonQuantity = styled.button`
-  width: 80px;
-  height: 55px;
-  background: red;
-  border-radius: 15px;
-  cursor:pointer;
-  border: none;
-  border: 2px solid #961701 ;
-  font-size: 30px;
-
-  &:hover{
-    background: #ff5c3f;
-  }
-
-  &:nth-child(3) {
-    background: #3ee83e;
-    border: 2px solid #0cd11c ;
-    &:hover{
-      background: #13f77d;
-    }
-  }
-`;
-const InputQuantity = styled.input`
-display:flex;
-align-items: center;
-text-align: center;
-width:180px;
-height: 50px;
-border-radius: 15px;
-border: none;
-font-size: 25px;
-`;
-const Quatity = styled.div`
-display:flex;
-justify-content: space-around;
-width: 400px;
-height: 80px;
-`;
-const SetNumber = styled.button`
-display:flex;
-justify-content:center;
-align-items:center;
-border:none;
-cursor: pointer;
-border-radius:10px;
-border: 2px solid #13f77d ;
-&:hover{
-  background: #13f77d;
-}
-
-width: 100px;
-height: 30px;
-background: #C2EFEE;
-
-`;
-const Plus = styled.div`
-display:flex;
-justify-content: space-between;
-margin-top: 30px;
-margin-bottom: 0px;
-
-width: 400px;
-height: 80px;
-`;
-
-const ResponsiveButtonsPlus = styled(Plus)`
-  @media (max-width: 900px) {
-    width: 320px;
-  }
-`;
 

@@ -44,9 +44,9 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
     try{
       const payment = await mercadopago.payment?.create(payment_data)
       if(payment){
-        if (!buyer.id) throw unauthorizedError();
+        if (!buyer.id) return unauthorizedError();
 
-        if (!idRaffle || !quantity || !total) throw notFoundError();
+        if (!idRaffle || !quantity || !total) return notFoundError();
         await mercadoPagoRepository.createBuyerPayment(buyer.id, idRaffle, quantity, total, payment?.body)
 
         console.log("buyer payment created")
@@ -56,11 +56,36 @@ async function createPaymentToTicket(body: buyData, next: NextFunction) {
     catch(error) {
       console.log("failed buyer payment creation")
       console.log(error.message)
-      next(error)
+      return next(error)
     };
 }
 
+async function findTickets(email:string, phone: string, next: NextFunction) {
+  try{
+    const emailBuyer = await buyerRepository.findBuyerByEmail(email)
+    if(!emailBuyer) return notFoundError();
+
+    const phoneBuyer = await buyerRepository.findBuyerByEmail(phone)
+    if(!phoneBuyer) return notFoundError();
+
+    if(emailBuyer.id === phoneBuyer.id){
+      const numbers = await buyerRepository.findNumbersReservationByBuyerId(emailBuyer.id)
+      return numbers
+    }
+    if(emailBuyer.id !== phoneBuyer.id){
+      const numbersEmail = await buyerRepository.findNumbersReservationByBuyerId(emailBuyer.id)
+      const numbersPhone = await buyerRepository.findNumbersReservationByBuyerId(phoneBuyer.id)
+
+      return {numbersEmail, numbersPhone}
+    }
+  }
+  catch(error){
+    return next(error)
+  }
+}
+
 const buyerService = {
-    createPaymentToTicket
+    createPaymentToTicket,
+    findTickets
 }
 export default buyerService;

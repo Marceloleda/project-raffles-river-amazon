@@ -91,131 +91,129 @@ function sendBuyTicket(event){
   }
 }
 
-    return (
+  return (
       <ModalContainer>
         <ContentWrapper>
           <ModalContent>
-                <h1>Preencha seus dados</h1>
+            <h1>Preencha seus dados</h1>
+            <Forms>
+              <form onSubmit={sendBuyTicket}>
+                <Inserir 
+                  id="name" 
+                  $isloading={isLoading}
+                  placeholder="Nome completo" 
+                  value={buyer.name} onChange={(e)=>
+                  setBuyer({...buyer, name: e.target.value})
+                  } required/>
+                <Inserir 
+                  id="email" 
+                  $isloading={isLoading}
+                  type="email" 
+                  placeholder="Email" 
+                  value={buyer.email} onChange={(e)=>
+                  setBuyer({...buyer, email: e.target.value})
+                  }required
+                />
+                <Inserir
+                  id="phone"
+                  $isloading={isLoading}
+                  placeholder="(99) 99999-9999"
+                  mask="(#0) 00000-0000"
+                  definitions={{
+                    '#': /[1-9]/,
+                  }}
+                  value={buyer.phone_number}
+                  onChange={(e) => setBuyer({ ...buyer, phone_number: e.target.value })}
+                  onAccept={(value) => setBuyer({ ...buyer, phone_number: value })}
+                  required
+                />
 
-                <Forms>
-                    <form onSubmit={sendBuyTicket}>
-                        <Inserir 
-                          id="name" 
-                          $isloading={isLoading}
-                          placeholder="Nome completo" 
-                          value={buyer.name} onChange={(e)=>
-                          setBuyer({...buyer, name: e.target.value})
-                        } required/>
-                        <Inserir 
-                          id="email" 
-                          $isloading={isLoading}
-                          type="email" 
-                          placeholder="Email" 
-                          value={buyer.email} onChange={(e)=>
-                          setBuyer({...buyer, email: e.target.value})
-                          }required
-                          />
-                        <Inserir
-                          id="phone"
-                          $isloading={isLoading}
-                          placeholder="(99) 99999-9999"
-                          mask="(#0) 00000-0000"
-                          definitions={{
-                            '#': /[1-9]/,
-                          }}
-                          value={buyer.phone_number}
-                          onChange={(e) => setBuyer({ ...buyer, phone_number: e.target.value })}
-                          onAccept={(value) => setBuyer({ ...buyer, phone_number: value })}
-                          required
-                        />
+                {isLoading === true? 
+                  <FormControlLabel
+                    label="Receber dados desta compra no WhatsApp?"
+                    disabled
+                    control={
+                      <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
+                        setBuyer({...buyer, hasWhatsapp: e.target.checked})
+                      } name="whatsapp" />
+                    }
+                  />
+                  : 
+                  <FormControlLabel
+                  label="Receber dados desta compra no WhatsApp?"
+                  control={
+                    <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
+                      setBuyer({...buyer, hasWhatsapp: e.target.checked})
+                    } name="whatsapp" />
+                  }
+                  />
+                  }
+                  {whatsappExist? 
+                  <FormHelperText>É necessário que o número tenha WhatsApp</FormHelperText>
+                  :
+                  <FormHelperText style={{color: "red", fontSize: '15px'}}>Adicione um número válido, que tenha WhatsApp</FormHelperText>
+                  }
 
-                          {isLoading === true? 
-                            <FormControlLabel
-                            label="Receber dados desta compra no WhatsApp?"
-                            disabled
-                            control={
-                              <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
-                                setBuyer({...buyer, hasWhatsapp: e.target.checked})
-                              } name="whatsapp" />
-                            }
-                            />
-                          : 
-                            <FormControlLabel
-                            label="Receber dados desta compra no WhatsApp?"
-                            control={
-                              <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
-                                setBuyer({...buyer, hasWhatsapp: e.target.checked})
-                              } name="whatsapp" />
-                            }
-                            />
-                          }
-                          {whatsappExist? 
-                          <FormHelperText>É necessário que o número tenha WhatsApp</FormHelperText>
-                          :
-                          <FormHelperText style={{color: "red", fontSize: '15px'}}>Adicione um número válido, que tenha WhatsApp</FormHelperText>
-                          }
+                  <DadosPagamento>
+                    <h1>Detalhes da compra:</h1>
+                    <div>
+                      <Dados><h2>Rifa:</h2> <p>{dataRaffle.name}</p></Dados>
+                      <Dados><h2>Quantidade:</h2> <p>{dataRaffle.quantity}</p></Dados>
+                      <Dados><h2>Total:</h2><p>R$ {dataRaffle.total}</p></Dados>
+                    </div>
+                    
+                    <h1>Formas de pagamento:</h1>
+                    <Image
+                      src={Logopix} 
+                      alt="pix"
+                      width={210} 
+                      height={75} 
+                      style={{ marginBottom: '25px' }}
+                    />
 
-                        <DadosPagamento>
-                          <h1>Detalhes da compra:</h1>
-                          <div>
-                            <Dados><h2>Rifa:</h2> <p>{dataRaffle.name}</p></Dados>
-                            <Dados><h2>Quantidade:</h2> <p>{dataRaffle.quantity}</p></Dados>
-                            <Dados><h2>Total:</h2><p>R$ {dataRaffle.total}</p></Dados>
-                          </div>
-                          
-                          <h1>Formas de pagamento:</h1>
+                    <Popup>
+                      <Alert severity="info">
+                        <AlertTitle>Informação</AlertTitle>                            
+                        <h3>No momento estamos aceitando somente pagamentos via Pix. <br/> <br/>Agradeço a compreensão.</h3>
+                      </Alert>
+                    </Popup>
+                    {buyer.hasWhatsapp && buyer.hasWhatsapp === true?
+                      <Popup>
+                        <Alert severity="warning">
+                          <AlertTitle>Aviso</AlertTitle>
                           <Image
-                            src={Logopix} 
-                            alt="pix"
-                            width={210} 
-                            height={75} 
-                            style={{ marginBottom: '25px' }}
-                          />
+                              src={LogoWhats} 
+                              alt="whatsapp"
+                              width={35} 
+                              height={35} 
+                            />
+                          <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
+                        </Alert>
+                      </Popup>
+                      : <></>
+                    }
+                    {whatsappExist?
+                    ""
+                    : 
+                    <Alert severity="error">Este número não tem WhatsApp!</Alert>
+                    }
+                  </DadosPagamento>
 
-                          <Popup>
-                            <Alert severity="info">
-                              <AlertTitle>Informação</AlertTitle>                            
-                              <h3>No momento estamos aceitando somente pagamentos via Pix. <br/> <br/>Agradeço a compreensão.</h3>
-                            </Alert>
-                          </Popup>
-                          {buyer.hasWhatsapp && buyer.hasWhatsapp === true?
-                            <Popup>
-                              <Alert severity="warning">
-                                <AlertTitle>Aviso</AlertTitle>
-                                <Image
-                                    src={LogoWhats} 
-                                    alt="whatsapp"
-                                    width={35} 
-                                    height={35} 
-                                  />
-                                <h3>Após o pagamento, você receberá uma menssagem via WhatsApp com os números da sorte e também poderá consultar dentro do site.</h3>
-
-                              </Alert>
-                            </Popup>
-                            : <></>
-                          }
-                          {whatsappExist?
-                          ""
-                          : 
-                          <Alert severity="error">Este número não tem WhatsApp!</Alert>
-                          }
-                        </DadosPagamento>
-
-                        <Botao type="submit" $isloading={isLoading} disabled={isLoading}>{
-                          isLoading? 
-                          (<SpinnerContainer>
-                            <StyledSpinner />
-                          </SpinnerContainer>): "Finalizar compra"
-                        }</Botao>
-                    </form> 
-                </Forms>
-            <div>
-                <ModalButton onClick={()=>{router.back()}} $isloading={isLoading} disabled={isLoading} >Voltar</ModalButton>
-            </div>
-          </ModalContent>
-        </ContentWrapper>
-      </ModalContainer>
-    );
+                  <Botao type="submit" $isloading={isLoading} disabled={isLoading}>{
+                    isLoading? 
+                    (<SpinnerContainer>
+                      <StyledSpinner />
+                    </SpinnerContainer>): "Finalizar compra"
+                  }</Botao>
+              </form> 
+            </Forms>
+          <div>
+              <ModalButton onClick={()=>{router.back()}} $isloading={isLoading} disabled={isLoading} >Voltar</ModalButton>
+          </div>
+        </ModalContent>
+      </ContentWrapper>
+    </ModalContainer>
+  );
 }
 
 const SpinnerContainer = styled.div`

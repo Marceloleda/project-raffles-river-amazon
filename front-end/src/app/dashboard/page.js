@@ -56,7 +56,7 @@ export default function Seller(){
                             <h1>Dashboard</h1>
                         </HeaderMini>
                         <DataUser>
-                            <h3>Saldo: {user.total_ticket_plan}</h3>
+                            <h3>Saldo de cotas: {user.total_ticket_plan}</h3>
                             <h3>{user.plans?.name}</h3>                
                         </DataUser>
                         {(!showCreateCampaign && !showFindCampaign) && (
@@ -77,18 +77,18 @@ export default function Seller(){
 }
 
 const SellerPage = styled.div`
-font-family: 'Roboto', sans-serif;
-display:flex;
-flex-direction: column;
-padding: 20px;
-flex:1;
-box-sizing: border-box;
-background: #f7f2e6;
-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  display:flex;
+  flex-direction: column;
+  padding: 20px;
+  flex:1;
+  box-sizing: border-box;
+  background: #f7f2e6;
+  height: 100vh;
 
-h2{
-    margin-bottom: 50px;
-}
+  h2{
+      margin-bottom: 50px;
+  }
 `;
 const SpinnerContainer = styled.div`
   display: flex;

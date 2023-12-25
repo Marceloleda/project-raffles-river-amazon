@@ -34,10 +34,20 @@ async function createBuyer(name: string, email: string, phone: string) {
   
     return buyer;
 }
+
+async function findNumbersReservationByBuyerId(id: string) {
+  const buyer = await prisma.numbers_reservations.findFirst({
+    where: {buyer_id: id}
+  });
+
+  return buyer;
+}
+
 const buyerRepository = {
     findBuyerByEmail,
     findBuyerByPhone,
     findBuyerById,
-    createBuyer
+    createBuyer,
+    findNumbersReservationByBuyerId
 }
 export default buyerRepository

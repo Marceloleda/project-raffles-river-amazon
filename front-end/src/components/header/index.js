@@ -25,7 +25,7 @@ export default function Header(){
       }
     }, []);
     return (
-        <ConteinerHeader>
+        <ResponsiveConteinerHeader>
             <Image
                src={Logo} 
                alt="Logo"
@@ -34,22 +34,22 @@ export default function Header(){
             />
             <h1>Rifas Rio Amazonas</h1>
                 {token? 
-                <Link href="/dashboard" style={{ textDecoration: 'none' }}><h2>Meu Painel</h2></Link> :
-                
-                <Login>
-                    <Link href="/auth-login" style={{ textDecoration: 'none' }}>
-                        <Image
-                            src={LoginPng} 
-                            alt="Logo"
-                            width={45} 
-                            height={45} 
-                            style={{marginLeft: "9px"}}
-                        />
-                        <h2>Login</h2>
-                    </Link>
-                </Login>
+                <Link href="/dashboard" style={{ textDecoration: 'none' }}><h2>Meu Painel</h2></Link> 
+                :
+                <Link href="/auth-login" style={{ textDecoration: 'none' }}>
+                  <Login>
+                          <Image
+                              src={LoginPng} 
+                              alt="Logo"
+                              width={45} 
+                              height={45} 
+                              style={{marginRight: "9px"}}
+                          />
+                          <h2>Login</h2>
+                  </Login>
+                </Link>
                 }
-        </ConteinerHeader>
+        </ResponsiveConteinerHeader>
     )
 }
 
@@ -69,13 +69,21 @@ const ConteinerHeader = styled.div`
     h1{
         font-size: 40px; 
         font-weight: bold;
-
     }
     h2{
         font-size: 25px; 
         color: black; 
     }
 
+`;
+
+const ResponsiveConteinerHeader = styled(ConteinerHeader)`
+  @media (max-width: 900px) {
+    h1{
+      font-size: 20px; 
+      font-weight: bold;
+    }
+  }
 `;
 
 const Login = styled.div`
@@ -85,7 +93,6 @@ align-items: center;
 justify-content: center;
 width: 95px;
 height:95px;
-margin: 0px;
 opacity: 0;
 animation: fade-in 0.5s ease-in-out forwards;
 animation-delay: 1ms;

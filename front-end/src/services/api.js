@@ -52,6 +52,10 @@ export function findRaffle(raffleId, slug){
   return api.get(`/raffle/${raffleId}/${slug}`)
 }
 
+export function findTicket(email, phone){
+  return api.get(`/buyer/find-tickets/${encodeURIComponent(email)}/${encodeURIComponent(phone)}`)
+}
+
 export function deleteOneRaffle(id){
   return api.delete(`/raffle/delete/${id}`)
 }
