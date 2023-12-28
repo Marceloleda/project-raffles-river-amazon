@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { SignUp } from '../protocols';
 import { SignInParams } from '../services/authentication-service';
 import { cpf } from 'cpf-cnpj-validator';
-import { raffles } from '../../node_modules/.prisma/client';
+import { raffles } from '@prisma/client';
 
 
 export const signInSchema = Joi.object<SignInParams>({

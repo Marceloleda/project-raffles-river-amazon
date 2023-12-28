@@ -1,5 +1,5 @@
+import { plans } from "@prisma/client";
 import { prisma } from "../../config";
-import { plans } from '../../../node_modules/.prisma/client';
 
 async function findByIdPurchase(paymentId: string){
     return prisma.payments_plan.findUnique({

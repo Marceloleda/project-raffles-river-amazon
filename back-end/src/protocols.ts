@@ -1,4 +1,4 @@
-import { raffles, sellers } from "../node_modules/.prisma/client";
+import { raffles, sellers } from "@prisma/client";
 import Decimal from "decimal.js";
 
 export type ApplicationError = {
