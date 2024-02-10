@@ -12,12 +12,10 @@ export default function Plans(){
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState({})
   const [token, setToken] = useState(null);
-
   
   const handlePurchaseButtonClick = (plan) => {
     CreatePayments(plan.name, router);
   };
-  
   
   useEffect(()=>{
     const storedToken = localStorage.getItem('token');

@@ -3,6 +3,7 @@
 import { styled } from 'styled-components'
 import Header from '../components/header/index'
 import Plans from '../components/plans/index'
+import Bottom from '../components/bottom/index'
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
         </Description>
         <Plans/>
       </Conteiner>
+      <Bottom/>
     </>
   )
 }

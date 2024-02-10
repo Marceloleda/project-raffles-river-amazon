@@ -5,7 +5,7 @@ import planRepository from "../src/repositories/plans-repository";
 async function main(){
     const plans = await planRepository.findAllPlans()
 
-    if(!plans){
+    if(plans.length === 0){
         await prisma.plans.createMany({
             data: [
             {   
@@ -21,7 +21,7 @@ async function main(){
                 priority_promotion: false,
                 custom_dashboard: false,
                 custom_logo: false,
-                price: 9.99
+                price: 7.99
             },
             {
                 name: "Pacote Básico",
@@ -36,14 +36,14 @@ async function main(){
                 priority_promotion: false,
                 custom_dashboard: false,
                 custom_logo: false,
-                price: 19.99
+                price: 14.99
             },
             {
                 name: "Pacote Premium",
                 description: "O Plano Premium é uma opção avançada e completa para aqueles que desejam maximizar o sucesso de suas campanhas com recursos robustos.",
                 max_campaigns: 10,
                 max_tickets: 15000,
-                campaign_duration: 60,
+                campaign_duration: 120,
                 custom_page: true,
                 support_email: true,
                 support_phone: true,
@@ -51,14 +51,14 @@ async function main(){
                 priority_promotion: true,
                 custom_dashboard: true,
                 custom_logo: true,
-                price: 29.90
+                price: 24.99
             },
             {
                 name: "Pacote Mega Rifa",
                 description: "O Plano Mega Rifa é especialmente projetado para atender ONGs ou Pessoas que desejam realizar rifas em larga escala com recursos avançados.",
                 max_campaigns: 20,
                 max_tickets: 999999,
-                campaign_duration: 90,
+                campaign_duration: 270,
                 custom_page: true,
                 support_email: true,
                 support_phone: true,
@@ -66,13 +66,11 @@ async function main(){
                 priority_promotion: true,
                 custom_dashboard: true,
                 custom_logo: true,
-                price: 39.90
+                price: 34.99
             }
         ]
         })
     }
-
-
 }
 
 main()

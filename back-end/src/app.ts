@@ -13,12 +13,17 @@ import {
   webhookRouter,
   whatsappBotRouter
 } from './routers';
-
-
+import { Server } from 'socket.io';
+import { createServer } from 'http';
 
 const app = express();
-
-
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:3000', 'https://rifasrioamazonas.com.br', 'https://www.rifasrioamazonas.com.br'], // Substitua pelo URL do seu frontend (Next.js)
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
 app
   .use(cors())
   .use(express.json())
@@ -32,6 +37,22 @@ app
   .use('/whatsapp-bot', whatsappBotRouter)
   .use(handleApplicationErrors);
 
+// io.on('connection', (socket) => {
+//   console.log('Novo cliente conectado');
+
+//   socket.on('hello', (arg) => {
+//     console.log(arg); // 'world'
+//   });
+
+//   socket.on('error', (err) => {
+//     console.error('Erro no socket:', err);
+//   });
+
+//   // Evento personalizado para debug
+//   socket.on('debug', (data) => {
+//     console.log('Evento de debug:', data);
+//   });
+// });
 
 export function init(): Promise<Express> {
   connectDb();
@@ -42,4 +63,5 @@ export async function close(): Promise<void> {
   await disconnectDB();
 }
 
+export { server, io }; // Exportando server e io para uso em outras partes do código
 export default app;

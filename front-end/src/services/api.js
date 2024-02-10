@@ -53,13 +53,31 @@ export function findRaffle(raffleId, slug){
 }
 
 export function findTicket(email, phone){
-  return api.get(`/buyer/find-tickets/${encodeURIComponent(email)}/${encodeURIComponent(phone)}`)
+  const params = new URLSearchParams();
+  if (email) params.append('email', email);
+  if (phone) params.append('phone', phone);
+
+  const queryString = params.toString();
+
+  return api.get(`/buyer/find-tickets?${queryString}`);
+}
+
+export function findBuyerByIdSuccessPayment(idPayment){
+  return api.get(`/buyer/payment-success/${idPayment}`)
 }
 
 export function deleteOneRaffle(id){
-  return api.delete(`/raffle/delete/${id}`)
+  return api.put(`/raffle/delete/${id}`)
 }
 
 export function checkWhatsappPhone(phone){
   return api.get(`/whatsapp-bot/check-phone/${phone}`)
+}
+
+export function findPaymentRaffle(id){
+  return api.get(`/buyer/find-payment-raffle/${id}`)
+}
+
+export function cancelPayment(id){
+  return api.put(`/buyer/cancel-payment/${id}`)
 }

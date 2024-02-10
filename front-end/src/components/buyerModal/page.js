@@ -8,22 +8,26 @@ import { buyTicket, checkWhatsappPhone } from "../../services/api";
 import Logopix from "../../assets/images/pixLogo.png"
 import LogoWhats from "../../assets/images/whats184.png"
 import Image from "next/image";
+import LogoMP from "../../assets/images/mercado-pago.png"
 import { Alert, AlertTitle, Checkbox, FormControlLabel, FormHelperText } from '@mui/material';
+import DataPaymentBuyer from '../../app/payment-buyer/page';
+import Swal from 'sweetalert2';
 
-export function BasicModal() {
+
+export function BasicModal({onSetStateModal}) {
   let dataRaffle
   const [buyer, setBuyer] = useState({
     name: '',
     email: '',
     phone_number:'',
-    hasWhatsapp: false
+    hasWhatsapp: false,
+    adult: false
+
 })
   const [isLoading, setIsloading] = useState(false);
   const [whatsappExist, setWhatsappExist] = useState(true);
-
-  const [payment, setPayment] = useState()
-  const [raffle, setRaffle] = useState({})
-
+  const [mercadoPagoData, setMercadoPagoData] = useState(null)
+  
   if (typeof window !== 'undefined') {
     const bodyString = localStorage.getItem("bodyRaffle");
     dataRaffle = JSON.parse(bodyString);
@@ -46,15 +50,15 @@ function sendBuyTicket(event){
       .then((res) => {
         if (res.data === true) {
           // O número de WhatsApp existe, então podemos prosseguir com a compra
-
           buyTicket(body)
             .then((res) => {
               const mercadoPago = res.data;
               setIsloading(false);
-              window.open(
-                `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
-                '_blank'
-              );
+              // window.open(
+              //   `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
+              //   '_blank'
+              // );
+              setMercadoPagoData(res.data)
               // router.push(`/payment-buyer/${mercadoPago.id}`)
             })
             .catch((err) => {
@@ -78,15 +82,21 @@ function sendBuyTicket(event){
       .then((res) => {
         const mercadoPago = res.data;
         setIsloading(false);
-        window.open(
-          `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
-          '_blank'
-        );
+        setMercadoPagoData(res.data)
+        // window.open(
+        //   `${mercadoPago?.point_of_interaction?.transaction_data?.ticket_url}`,
+        //   '_blank'
+        // );
         // router.push(`/payment-buyer/${mercadoPago.id}`)
       })
       .catch((err) => {
         console.log(err.message);
         setIsloading(false);
+        Swal.fire({
+          icon: "warning",
+          title: "Oops...",
+          text: "Algo deu errado, volte para a campanha e tente novamente!",
+        });
       });
   }
 }
@@ -94,6 +104,9 @@ function sendBuyTicket(event){
   return (
       <ModalContainer>
         <ContentWrapper>
+         {mercadoPagoData !== null?
+         <DataPaymentBuyer onDataMecadopago={mercadoPagoData} setSchrollModel={onSetStateModal}/>
+         :
           <ModalContent>
             <h1>Preencha seus dados</h1>
             <Forms>
@@ -130,7 +143,7 @@ function sendBuyTicket(event){
 
                 {isLoading === true? 
                   <FormControlLabel
-                    label="Receber dados desta compra no WhatsApp?"
+                    label="Receber números da sorte no WhatsApp?"
                     disabled
                     control={
                       <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
@@ -140,7 +153,7 @@ function sendBuyTicket(event){
                   />
                   : 
                   <FormControlLabel
-                  label="Receber dados desta compra no WhatsApp?"
+                  label="Receber números da sorte no WhatsApp?"
                   control={
                     <Checkbox checked={buyer.hasWhatsapp} onChange={(e)=>
                       setBuyer({...buyer, hasWhatsapp: e.target.checked})
@@ -153,11 +166,16 @@ function sendBuyTicket(event){
                   :
                   <FormHelperText style={{color: "red", fontSize: '15px'}}>Adicione um número válido, que tenha WhatsApp</FormHelperText>
                   }
+                    <Popup>
+                      <Alert severity="info">
+                        <h3>Seus dados serão salvos para futuras compras.</h3>
+                      </Alert>
+                    </Popup>
 
                   <DadosPagamento>
                     <h1>Detalhes da compra:</h1>
                     <div>
-                      <Dados><h2>Rifa:</h2> <p>{dataRaffle.name}</p></Dados>
+                      <Dados><h2>Rifa: </h2> <p>{dataRaffle.name}</p></Dados>
                       <Dados><h2>Quantidade:</h2> <p>{dataRaffle.quantity}</p></Dados>
                       <Dados><h2>Total:</h2><p>R$ {dataRaffle.total}</p></Dados>
                     </div>
@@ -166,9 +184,16 @@ function sendBuyTicket(event){
                     <Image
                       src={Logopix} 
                       alt="pix"
-                      width={210} 
-                      height={75} 
+                      // width={210} 
+                      height={55} 
                       style={{ marginBottom: '25px' }}
+                    />
+                    <Image
+                      src={LogoMP} 
+                      alt="pix"
+                      // width={500} 
+                      height={40} 
+                      style={{ marginBottom: '35px', marginLeft: '15px' }}
                     />
 
                     <Popup>
@@ -198,6 +223,27 @@ function sendBuyTicket(event){
                     <Alert severity="error">Este número não tem WhatsApp!</Alert>
                     }
                   </DadosPagamento>
+                  {isLoading === true? 
+                  <StyledFormControlLabel
+                    label="Declaro ser maior de 18 anos e estar ciente de que menores não podem ganhar o prêmio."
+                    disabled
+                    control={
+                      <Checkbox checked={buyer.adult} onChange={(e)=>
+                        setBuyer({...buyer, adult: e.target.checked})
+                      } name="maior idade" />
+                    }
+                  />
+                  : 
+                  <StyledFormControlLabel
+                  label="Declaro ser maior de 18 anos e estar ciente de que menores não podem ganhar o prêmio."
+                  control={
+                    <Checkbox checked={buyer.adult} onChange={(e)=>
+                      setBuyer({...buyer, adult: e.target.checked})
+                    } name="maior idade" />
+                  }
+                  required
+                  />
+                  }
 
                   <Botao type="submit" $isloading={isLoading} disabled={isLoading}>{
                     isLoading? 
@@ -208,14 +254,25 @@ function sendBuyTicket(event){
               </form> 
             </Forms>
           <div>
-              <ModalButton onClick={()=>{router.back()}} $isloading={isLoading} disabled={isLoading} >Voltar</ModalButton>
+              <ModalButton 
+              onClick={()=>{
+                onSetStateModal(false)
+                router.back()
+              }} 
+              $isloading={isLoading} 
+              disabled={isLoading} 
+              >
+                Voltar
+              </ModalButton>
           </div>
-        </ModalContent>
+        </ModalContent>}
       </ContentWrapper>
     </ModalContainer>
   );
 }
-
+const StyledFormControlLabel = styled(FormControlLabel)`
+  font-size: 5px;
+`;
 const SpinnerContainer = styled.div`
 display: flex;
 justify-content: center;
@@ -273,7 +330,7 @@ const StyledSpinner = styled.div`
 `;
 const ModalContainer = styled.div`
   position: fixed;
-  z-index: 10;
+  z-index: 100;
   inset: 0;
   overflow-y: auto;
 `;
@@ -384,7 +441,7 @@ const Botao = styled.button`
 display: flex;
 justify-content: center;
 align-items: center;
-margin-top: 5px;
+margin-top: 15px;
 margin-bottom: 20px;
 width: 100%;
 height: 46px;

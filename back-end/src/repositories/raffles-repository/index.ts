@@ -55,8 +55,11 @@ async function createShuffleNumbers(id: string, shuffledArray: any, userId: stri
     })
 }
 async function deleteMyRaffle(id:string) {
-    return await prisma.raffles.delete({
-        where: {id}
+    return await prisma.raffles.update({
+        where: {id},
+        data: {
+            is_deleted: true
+        }
     })
 }
 

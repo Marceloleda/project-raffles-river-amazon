@@ -64,6 +64,7 @@ const ConteinerHeader = styled.div`
     align-items: center;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     font-family: 'Montserrat', sans-serif;
+    z-index: 10;
 
 
     h1{

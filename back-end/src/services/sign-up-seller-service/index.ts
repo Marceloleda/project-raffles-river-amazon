@@ -7,6 +7,7 @@ import planRepository from "../../repositories/plans-repository";
 
 
 async function signUpCreate(res: Response, data:SignUp) {   
+
     const exist = await checkIfEmailOrCpfExists(data.email, data.cpf, data.phone_number);
     if(exist.conflict === true){
         throw conflictError(exist.message)

@@ -1,13 +1,16 @@
 import { Router } from "express";
-// import { authenticateToken } from '@/middlewares';
-import { buyTicket, findTicket } from "../controllers/buyer-controller";
+import { buyTicket, findBuyerByIdPaymentSuccess, findTicket } from "../controllers/buyer-controller";
+import mercadoPago from "../controllers/mercado-pago-controller";
 
 
 const buyerRouter = Router();
 
 buyerRouter
 .post('/payment', buyTicket)
-.get('/find-tickets/:email/:phone', findTicket)
+.get('/find-tickets', findTicket)
+.get('/find-payment-raffle/:id', mercadoPago.findPayment)
+.get('/payment-success/:idPayment', findBuyerByIdPaymentSuccess)
+.put('/cancel-payment/:id', mercadoPago.cancelPayment)
 
 
 export { buyerRouter}

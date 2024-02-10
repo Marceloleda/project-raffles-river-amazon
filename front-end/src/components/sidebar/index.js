@@ -3,15 +3,35 @@ import { styled } from "styled-components"
 import { useRouter } from 'next/navigation';
 import LogoSeller from '../../assets/images/logo_seler.jpeg'
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 //colocar a logo RA
 export default function Sidebar({onFindCampaign, onHome}){
     const router = useRouter()
 
     const exit = ()=>{
-        localStorage.setItem("token", '')
-        alert("Desconectado")
-        router.push("/")
+        Swal.fire({
+            title: "Você tem certeza?",
+            text: "Você vai ter que se logar novamente para entrar!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Voltar",
+            confirmButtonText: "Sim, desejo sair"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Deslogado!",
+                text: "Você foi deslogado.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+              });
+              localStorage.setItem("token", '')
+              router.push("/")
+            }
+          });
     }
     return(
         <SidebarWrapper>

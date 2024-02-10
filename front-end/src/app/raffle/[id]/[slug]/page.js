@@ -14,6 +14,7 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import ShareIcon from '@mui/icons-material/Share';
 import Raffle from '../../../../components/buyerRaffle/index';
 import FindTickets from '../../../../components/findTickets/index';
+import Bottom from '../../../../components/bottom';
 
 
 
@@ -28,6 +29,11 @@ export default function RafflePagePrincipal({ params, searchParams }) {
   const handleFindTickets = () => {
     setShowRaffle(false)
     setShowFindPurchase(true);
+  };
+
+  const handleBackRaffle = () => {
+    setShowRaffle(true);
+    setShowFindPurchase(false);
   };
 
   const handleRaffle = () => {
@@ -71,10 +77,15 @@ export default function RafflePagePrincipal({ params, searchParams }) {
         ))}
       </List>
       <Divider />
-      {/* <List>
+      <List>
         {['Suporte'].map((text, index) => (
           <ListItem key={text} >
-            <ListItemButton>
+            <ListItemButton onClick={()=>{
+              window.open(
+                `https://api.whatsapp.com/send?phone=5592995074770&text=Ol%C3%A1.%20Preciso%20de%20suporte%20com%20uma%20Rifa,%20aguardo%20mais%20informa%C3%A7%C3%B5es.`,
+                '_blank'
+              );
+            }}>
               <ListItemIcon>
                 {index % 2 === 0 ? <MailIcon /> : <MailIcon />}
               </ListItemIcon>
@@ -82,7 +93,7 @@ export default function RafflePagePrincipal({ params, searchParams }) {
             </ListItemButton>
           </ListItem>
         ))}
-      </List> */}
+      </List>
     </Box>
   );
 
@@ -110,9 +121,9 @@ export default function RafflePagePrincipal({ params, searchParams }) {
                   </SwipeableDrawer>
               </ResponsiveMenuHeader>
           </ResponsiveConteinerHeader>
-          {showFindPurchase && <FindTickets/>}
+          {showFindPurchase && <FindTickets onHandleBackRaffle={handleBackRaffle}/>}
           {showRaffle && <Raffle  params={params} searchParams={searchParams}/>}
-
+          <Bottom/>
         </>
   );
 }
@@ -195,29 +206,29 @@ const ResponsiveConteinerHeader = styled(ConteinerHeader)`
   }
 `;
 
-const SpinnerContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    background: #f2f2f2;
-    align-items: center;
-    min-height: 100vh; 
-`;
-const StyledSpinner = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid purple;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+// const SpinnerContainer = styled.div`
+//     display: flex;
+//     justify-content: center;
+//     background: #f2f2f2;
+//     align-items: center;
+//     min-height: 100vh; 
+// `;
+// const StyledSpinner = styled.div`
+//   width: 50px;
+//   height: 50px;
+//   border: 5px solid #f3f3f3;
+//   border-top: 5px solid purple;
+//   border-radius: 50%;
+//   animation: spin 1s linear infinite;
 
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
+//   @keyframes spin {
+//     0% {
+//       transform: rotate(0deg);
+//     }
+//     100% {
+//       transform: rotate(360deg);
+//     }
+//   }
+// `;
 
 

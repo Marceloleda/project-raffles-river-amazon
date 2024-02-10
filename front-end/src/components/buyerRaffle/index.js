@@ -8,15 +8,15 @@ import { BasicModal } from '../buyerModal/page';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Swal from 'sweetalert2';
 
 
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-      <Box sx={{ width: '100%', mr: 1 }}>
+      <Box sx={{ width: '100%', mr: 1}}>
         <StyledLinearProgress 
           variant="determinate" 
-          color="success"
           {...props} 
         />
       </Box>
@@ -32,16 +32,25 @@ function LinearProgressWithLabel(props) {
 export default function Raffle({params, searchParams}) {
   const [progress, setProgress] = useState(0);
   const router = useRouter();
-  const [raffle, setRaffle] = useState([]);
+  const [raffle, setRaffle] = useState({});
   const [defaultValue, setDefaultValue] = useState(1);
   const showModal = searchParams?.modal;
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [soldOff, setSoldOff] = useState(false)
+  const [raffleDeleted, setRaffleDeleted] = useState(false)
 
   useEffect(() => {
     findRaffle(params.id, params.slug)
     .then((res) => {
       setRaffle(res.data);
         setProgress(((res.data.total_tickets - res.data.avaliable_tickets) / res.data.total_tickets) * 100);
+        if(res?.data?.avaliable_tickets === 0){
+          setSoldOff(true)
+        }
+        if(res?.data?.is_deleted === true){
+          setRaffleDeleted(true)
+        }
         setIsLoading(false);
       })
       .catch((err) => {
@@ -49,28 +58,89 @@ export default function Raffle({params, searchParams}) {
         setIsLoading(false);
       });
   }, []);
+  
 
   const totalPrice = (defaultValue * raffle.ticket_price).toFixed(2); 
 
   const modal = () => {
+    if(raffleDeleted){
+      return Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "A campanha está indisponível! Entre em contato com o suporte para saber mais!",
+      });
+    }
+    if(soldOff){
+      return Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "A campanha está esgotada! Mas fique ligado para novidades!",
+      });
+    }
     if(defaultValue < 1){
-      return alert("É NECESSARIO A QUANTIDADE DE PELO MENOS 1 NÚMERO DA SORTE")
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "É necessário pelo menos 1 número!",
+      });
     }
     if(defaultValue > raffle?.avaliable_tickets){
-      return alert("NÃO É POSSIVEL COMPRAR ESSA QUANTIDADE")
+      return Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: `Temos apenas ${raffle.avaliable_tickets} números da sorte disponíveis. Tente uma quantidade menor ;)`,
+      });
     }
-
     const body = {
       raffleId: params.id,
       name: raffle.title,
       quantity: defaultValue,
       total: totalPrice,
+      image: "../../assets/images/prizes.jpeg"
     };
     const bodyString = JSON.stringify(body);
     localStorage.setItem("bodyRaffle", bodyString);
+    modalStatus()
+
 
     router.push(`${params.slug}/?modal=true`);
   };
+
+
+  const modalStatus = () => {
+
+    setIsModalOpen(true);
+  };
+
+  //tirar o modal quando aperta A TECLA ESC
+  // const escModal = () => {
+  //   router.push(`${params.slug}`);
+  // }
+
+  useEffect(() => {
+    // Adiciona/remova a classe ao body com base no estado do modal
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+      // document.addEventListener('keydown', handleEscKey);   //tirar o modal quando aperta A TECLA ESC
+    } else {
+      document.body.style.overflow = 'auto';
+      // document.removeEventListener('keydown', handleEscKey);   //tirar o modal quando aperta A TECLA ESC
+    }
+    
+    // return () => {                                              //tirar o modal quando aperta A TECLA ESC
+    //   document.removeEventListener('keydown', handleEscKey);
+    // };
+  }, [isModalOpen]);
+
+
+  //tirar o modal quando aperta A TECLA ESC
+  // const handleEscKey = (e) => {
+  //   // Verifica se a tecla pressionada é a tecla "Esc" (código 27)
+  //   if (e.keyCode === 27) {
+  //     // Fecha o modal quando a tecla "Esc" for pressionada
+  //     escModal();
+  //   }
+  // };
 
   const handleIncrementSet = (value) => {
     setDefaultValue(defaultValue + value);
@@ -102,58 +172,76 @@ export default function Raffle({params, searchParams}) {
           <StyledSpinner />
         </SpinnerContainer>
       ) : (
-        <Conteiner>
-          
-          <ResponsiveImageRaffle>
-            <Galleria/>
-          </ResponsiveImageRaffle>
+        <>
+            {raffleDeleted?
+              <SoldOffWord >
+                <h1>Indisponível!</h1>
+                <h1>Entre em contato com o suporte!</h1>
+              </SoldOffWord>
+            :
+            ""
+            }
+            {soldOff?
+              <SoldOffWord>
+                <h1>Esgotado!</h1>
+              </SoldOffWord>
+            :
+            ""
+            }
+          <Conteiner $isSoldOff={soldOff} $isDeleted={raffleDeleted}>
+            <ResponsiveImageRaffle>
+              <Galleria />
+            </ResponsiveImageRaffle>
 
-          <ResponsiveInfoRaffle>
-              <div>
-                <h1>{raffle?.title}</h1>
-                <ModalPrice>
-                  R$ {raffle?.ticket_price}
-                </ModalPrice>
-                <h2>Descrição: </h2>
-                <h3>{raffle?.description}</h3>
-              </div>
-            <Box sx={{ marginTop: "50px"}}>
-              <h2 style={{fontSize: "18px", marginBottom: "5px" }}>COTAS LIMITADAS! Garanta a sua agora e não fique de fora!</h2>
-              <LinearProgressWithLabel 
-                value={progress} 
+            <ResponsiveInfoRaffle $modal={isModalOpen}>
+                <div>
+                  <h1>{raffle?.title}</h1>
+                  <ModalPrice>
+                    R$ {raffle?.ticket_price}
+                  </ModalPrice>
+                  <h2>Descrição: </h2>
+                  <h3>{raffle?.description}</h3>
+                </div>
+              <Box sx={{ marginTop: "50px"}}>
+                <h2 style={{fontSize: "16px", marginBottom: "5px", color: "red" }}>COTAS LIMITADAS! <br/>Garanta a sua agora e não fique de fora! Compre agora!</h2>
+                <LinearProgressWithLabel 
+                  value={progress} 
+                  />
+                {/* <LinearProgress sx={{ width: "91.7%" }}/> */}
+              </Box>
+            </ResponsiveInfoRaffle>
+            <ResponsiveModelButtons>
+              <ResponsiveButtonsPlus>
+                <SetNumber onClick={() => handleIncrementSet(10)}>Adicionar +10</SetNumber>
+                <SetNumber onClick={() => handleIncrementSet(25)}>Adicionar +25</SetNumber>
+                <SetNumber onClick={() => handleIncrementSet(100)}>Adicionar +100</SetNumber>
+              </ResponsiveButtonsPlus>
+
+              <ResponsiveQuatity>
+                <ButtonQuantity onClick={handleDecrement}>-</ButtonQuantity>
+                <InputQuantity
+                  type="text" 
+                  value={defaultValue}
+                  onChange={handleInputChange}
+                  min="0"
+                  inputMode="numeric" 
+                  pattern="\d*" 
                 />
-              {/* <LinearProgress sx={{ width: "91.7%" }}/> */}
-            </Box>
-          </ResponsiveInfoRaffle>
-          <ResponsiveButtonsPlus>
-            <SetNumber onClick={() => handleIncrementSet(5)}>+5</SetNumber>
-            <SetNumber onClick={() => handleIncrementSet(10)}>+10</SetNumber>
-            <SetNumber onClick={() => handleIncrementSet(20)}>+20</SetNumber>
-          </ResponsiveButtonsPlus>
-
-          <ResponsiveQuatity>
-            <ButtonQuantity onClick={handleDecrement}>-</ButtonQuantity>
-            <InputQuantity
-              type="text" 
-              value={defaultValue}
-              onChange={handleInputChange}
-              min="0"
-              inputMode="numeric" 
-              pattern="\d*" 
-            />
-            <ButtonQuantity onClick={handleIncrement}>+</ButtonQuantity>
-          </ResponsiveQuatity>
-          <Total_Value><h1>Total:</h1> <h2> R$ {totalPrice}</h2> </Total_Value>
-          <ResponsiveButtonBuy onClick={modal}>
-            <h1>Comprar</h1>
-            </ResponsiveButtonBuy>
-          {showModal && (
-            <>
-              <BasicModal />
-              <Overlay />
-            </>
-          )}
-        </Conteiner>
+                <ButtonQuantity onClick={handleIncrement}>+</ButtonQuantity>
+              </ResponsiveQuatity>
+              <Total_Value><h1>Total:</h1> <h2> R$ {totalPrice}</h2> </Total_Value>
+              <ResponsiveButtonBuy onClick={modal}>
+                <h1>Comprar</h1>
+                </ResponsiveButtonBuy>
+            </ResponsiveModelButtons>
+            {showModal && (
+              <>
+                <BasicModal onSetStateModal={setIsModalOpen}/>
+                <Overlay />
+              </>
+            )}
+          </Conteiner>
+        </>
       )}
     </>
   );
@@ -183,6 +271,53 @@ const StyledLinearProgress = styled(LinearProgress)`
   }
 `;
 
+const ModelButtons = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+background: #f7f7d7;
+flex-direction: column;
+border: 1px solid black ;
+border-radius:10px;
+margin-top: -7px;
+border-top: 0; 
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+
+margin-bottom: 27px;
+  width: auto;
+  max-width: 580px; 
+  padding: 15px; 
+  min-width: 525px;
+
+`;
+const ResponsiveModelButtons = styled(ModelButtons)`
+@media (max-width: 900px) {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 70%;
+
+  padding: 15px; 
+  width: 85%; 
+  max-width: 580px; 
+  min-width: 315px; 
+}
+`;
+
+const SoldOffWord = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+font-size: 37px;
+color: red;
+margin-top: 20px;
+font-family: 'Arial', sans-serif; 
+text-transform: uppercase; 
+text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+`;
+
 const Conteiner = styled.div`
     display: flex;
     justify-content: center;
@@ -190,6 +325,8 @@ const Conteiner = styled.div`
     background: #f7f2e6;
     flex-direction: column;
     min-height: 100vh; 
+    opacity: ${props => props.$isSoldOff || props.$isDeleted? '0.5' : '1'}; 
+
 `;
 const ConteinerHeader = styled.div`
     position: top;
@@ -243,13 +380,20 @@ const InfoRaffle = styled.div`
   flex-direction: column;
   border-radius:10px;
   border: 1px solid black ;
+  border-bottom: 0;
   background: #f2ef91;
   // background: #EAE639;
   margin-top: 25px;
+  margin-bottom: -5px;
   width: auto;
   max-width: 580px; 
   padding: 15px; 
   min-width: 525px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.7);
+  z-index: 3;
+  opacity: ${(props)=> props.$modal? "0.5" : "1"};
+
+
   h1 {
     font-family: 'Raleway', sans-serif;
     font-size: 32px;
@@ -272,11 +416,11 @@ const ResponsiveInfoRaffle = styled(InfoRaffle)`
     background: #f2ef91;
     margin-top: 25px;
     height: 70%;
-
     padding: 15px; 
     width: 85%; 
     max-width: 580px; 
     min-width: 315px; 
+
   }
 `;
 const Overlay = styled.div`
@@ -306,7 +450,7 @@ margin-top: 25px;
 `;
 const ResponsiveImageRaffle = styled(ImageRaffle)`
   @media (max-width: 900px) {
-    margin-top: 0px;
+    margin-top: 10px;
   }
 `;
 const ButtonBuy = styled.button`
@@ -346,7 +490,7 @@ const ModalPrice = styled.div`
 const ResponsiveButtonBuy = styled(ButtonBuy)`
   @media (max-width: 900px) {
     width:200px;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
   }
 `;
 
@@ -376,7 +520,7 @@ const InputQuantity = styled.input`
 display:flex;
 align-items: center;
 text-align: center;
-width:180px;
+width:150px;
 height: 50px;
 border-radius: 15px;
 border: none;
@@ -403,21 +547,23 @@ align-items:center;
 border:none;
 cursor: pointer;
 border-radius:10px;
-border: 2px solid #13f77d ;
+border: 2px solid #00e5c3 ;
 &:hover{
   background: #13f77d;
 }
-
+font-size: 16px;
 width: 100px;
-height: 30px;
+height: 57px;
 background: #C2EFEE;
+box-shadow: 0 1px 2px rgba(1, 1, 1, 1.5);
+
 
 `;
 const Plus = styled.div`
 display:flex;
 justify-content: space-between;
 margin-top: 30px;
-margin-bottom: 0px;
+margin-bottom: 10px;
 
 width: 400px;
 height: 80px;

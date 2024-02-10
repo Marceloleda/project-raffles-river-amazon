@@ -40,6 +40,14 @@ async function updateStatusBuyerPayment(payment: any){
         }
     })
 }
+async function updateStatusBuyerPaymentRefund(payment: any){
+    return prisma.purchases.update({
+        where: {payment_id: payment},
+        data: {
+            payment_status: "refund"
+        }
+    })
+}
 async function updateByIdStatusCanceled(payment: any){
     return prisma.payments_plan.update({
         where: {payment_id: payment},
@@ -79,9 +87,12 @@ async function createNumbersReservations(ramdomNumbers:any, purchaseId: string, 
         }
     })
 }
-async function findBuyer(buyer_id:string) {
+async function findBuyerByIdAndByRaffleId(buyer_id:string, raffleId: string) {
     return await prisma.numbers_reservations.findFirst({
-        where:{buyer_id: buyer_id}
+        where:{
+            buyer_id: buyer_id,
+            raffle_id: raffleId
+        }
     })
 }
 async function updateArrayNumbersBuyer(id: string, updateFirstNumbers: string[]) {
@@ -108,9 +119,10 @@ const webhookRepository = {
     updateRamdomNumbers,
     createNumbersReservations,
     updateStatusPurchases,
-    findBuyer,
+    findBuyerByIdAndByRaffleId,
     updateArrayNumbersBuyer,
-    findRaffle
+    findRaffle,
+    updateStatusBuyerPaymentRefund
 }
 
 export default webhookRepository;

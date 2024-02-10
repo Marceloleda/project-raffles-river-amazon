@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { IconButton, Skeleton } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function FindCampaign() {
   const router = useRouter();
@@ -29,29 +30,51 @@ export default function FindCampaign() {
   };
 
   async function deleteRaffle(id) {
-    deleteOneRaffle(id)
-      .then((res) => {
-        setCampaignData((prevData) => prevData.filter((data) => data.id !== id));
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    Swal.fire({
+      title: "Você tem certeza que deseja excluir esta rifa?",
+      text: "Isto é uma ação irreversível, VOCÊ PERDERÁ TODOS OS DADOS DESTA RIFA!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Voltar",
+      confirmButtonText: "Sim, desejo excluir esta rifa"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Excluido!",
+          text: "A Rifa foi excluida!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        deleteOneRaffle(id)
+          .then((res) => {
+            setCampaignData((prevData) => prevData.filter((data) => data.id !== id));
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+      }
+    });
   }
 
   const rafflesCard = campaignsData.map((data, id) => {
-    return (
-      <Raffle key={id}>
-        <h1>Rifa: {data.title}</h1>
-        <h2>Total de cotas: {data.total_tickets}</h2>
-        <h2>Valor: R$ {data.ticket_price}</h2>
-        <h3>Expira em: {data.expire_at}</h3>
-        <Button onClick={() => handleViewRaffle(data.id, data.title)}>Ver pagina da Rifa</Button>
-        <DeleteButton onClick={() => deleteRaffle(data.id)}>
-          <DeleteIcon/>
-            Excluir Rifa
-        </DeleteButton>
-      </Raffle>
-    );
+    if(data.is_deleted !== true){
+      return(
+        <Raffle key={id}>
+          <h1>Rifa: {data.title}</h1>
+          <h2>Total de cotas: {data.total_tickets}</h2>
+          <h2>Valor: R$ {data.ticket_price}</h2>
+          <h3>Expira em: {data.expire_at}</h3>
+          <Button onClick={() => handleViewRaffle(data.id, data.title)}>Ver pagina da Rifa</Button>
+          <DeleteButton onClick={() => deleteRaffle(data.id)}>
+            <DeleteIcon/>
+              Excluir Rifa
+          </DeleteButton>
+        </Raffle>
+      )
+    }
   });
 
   return (
@@ -73,7 +96,6 @@ export default function FindCampaign() {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: wrap;
   width: 100%;
 `;
 

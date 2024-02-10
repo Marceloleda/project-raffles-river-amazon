@@ -13,7 +13,7 @@ validateBody(raffleSchema), createRaffle)
 
 rafflesRouter.get('/:id/:slug', findRaffle)
 
-rafflesRouter.delete('/delete/:id', 
+rafflesRouter.put('/delete/:id', 
 authenticateToken,
 deleteRaffle)
 

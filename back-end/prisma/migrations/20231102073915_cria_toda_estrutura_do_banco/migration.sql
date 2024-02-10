@@ -53,6 +53,7 @@ CREATE TABLE "raffles" (
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expire_at" VARCHAR(255),
     "avaliable_tickets" INTEGER,
+    "is_deleted" BOOLEAN,
 
     CONSTRAINT "raffles_pkey" PRIMARY KEY ("id")
 );
@@ -114,8 +115,8 @@ CREATE TABLE "plans" (
 CREATE TABLE "prizes" (
     "id" UUID DEFAULT uuid_generate_v4() NOT NULL,
     "raffle_id" UUID NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "description" TEXT,
+    "position" INTEGER NOT NULL,
+    "description" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "prizes_pkey" PRIMARY KEY ("id")
@@ -128,6 +129,15 @@ CREATE TABLE "shuffle_numbers" (
     "ticket_date" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "seller_id" UUID,
     "random_numbers" TEXT[],
+
+    CONSTRAINT "consult_numbers_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "images_raffles" (
+    "id" UUID DEFAULT uuid_generate_v4() NOT NULL,
+    "raffle_id" UUID NOT NULL,
+    "links_images" TEXT[],
+    "created_at" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "consult_numbers_pkey" PRIMARY KEY ("id")
 );

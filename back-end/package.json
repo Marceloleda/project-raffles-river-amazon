@@ -47,6 +47,7 @@
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "request-etag": "^2.0.3",
+    "socket.io": "^4.7.3",
     "tough-cookie": "^4.1.3",
     "uuid": "^9.0.1"
   },

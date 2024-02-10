@@ -1,8 +1,7 @@
 import mercadoPago from "../../controllers/mercado-pago-controller";
-import { conflictError, notFoundError, notModifiedError, unauthorizedError } from "../../errors";
+import { notFoundError, notModifiedError, unauthorizedError } from "../../errors";
 import planRepository from "../../repositories/plans-repository";
 import sellerRepository from "../../repositories/sellers-repository";
-import { plans } from "@prisma/client";
 import dayjs from "dayjs";
 import { NextFunction, Response } from "express";
 

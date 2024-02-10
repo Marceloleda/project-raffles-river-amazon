@@ -121,6 +121,7 @@ export default function Cadastro(){
                                 onChange={(e)=>
                                 setCadastro({...cadastro, phone_number: e.target.value})
                                 }
+                                onAccept={(value) => setCadastro({ ...cadastro, phone_number: value })}
                                 required
                             />
                             <Inserir 
@@ -131,7 +132,10 @@ export default function Cadastro(){
                                 value={cadastro.cpf} 
                                 onChange={(e)=>
                                 setCadastro({...cadastro, cpf: e.target.value})
-                            }/>
+                                }
+                                onAccept={(value) => setCadastro({ ...cadastro, cpf: value })}
+
+                            />
                             <Inserir 
                                 id="password" 
                                 type="password" 

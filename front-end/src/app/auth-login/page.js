@@ -40,7 +40,12 @@ export default function Login(){
             .then((response)=>{
             api.defaults.headers["Authorization"] = `Bearer ${response.data.Token}`;
             localStorage.setItem("token", response.data.Token)
-            alert('logado com sucesso')
+            Swal.fire({
+                title: 'Logado com sucesso!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 2000 // Define o tempo em milissegundos antes de fechar automaticamente (opcional)
+              });            
             router.push("/dashboard");
         })
             .catch(err => {
