@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Swal from "sweetalert2";
 
 
-export default function CreateCampaign() {
+export default function CreateCampaign({onHandleFindCampaign}) {
   const router = useRouter()
   const [passwordError, setPasswordError] = useState(false);
   const [campaignData, setCampaignData] = useState({
@@ -23,14 +23,14 @@ export default function CreateCampaign() {
       createRaffle({...campaignData, total_tickets: totalTicketsNumber})
         .then((res) => {
           Swal.fire('Cadastrado com sucesso!', '', 'success');
-          router.push("/dashboard")
+          onHandleFindCampaign()
         })
         .catch((err) => {
           if (err.message === "Request failed with status code 403") {
             Swal.fire({
               icon: 'error',
               title: 'Plano insuficiente',
-              text: 'Para realizar esta ação é necessário realizar um upgrade de plano.',
+              text: 'Para realizar esta ação é necessário realizar um upgrade de plano ou renovar seu pacote.',
               showCancelButton: true,
               confirmButtonColor: '#b972e0',
               cancelButtonColor: 'red',
@@ -135,10 +135,11 @@ font-family: 'Raleway';
     display:flex;
     align-items: center;
     flex-direction: column;
-    h1{
+    h4{
         font-family: 'Roboto', sans-serif;
         font-weight: bold;
         font-size: 32px;
+        margin-bottom: 25px;
         color:black;
     }
 `;
@@ -166,7 +167,7 @@ const Forms = styled.div`
         }
 `;
 const Inserir = styled.input`
-    width: 326px;
+    width: 526px;
     height: 58px;
     margin-bottom: 16px;
     background: #FFFFFF;
@@ -177,6 +178,14 @@ const Inserir = styled.input`
     &:first-child{
         margin-top: 25px;
     }
+`;
+const ResponsiveModelInserir = styled(Forms)`
+@media (max-width: 900px) {
+  padding: 15px; 
+  width: 85%; 
+  max-width: 480px; 
+  min-width: 315px; 
+}
 `;
 const Botao = styled.button`
 display: flex;

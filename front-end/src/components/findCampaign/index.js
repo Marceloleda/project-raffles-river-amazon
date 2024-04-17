@@ -26,8 +26,16 @@ export default function FindCampaign() {
 
   const handleViewRaffle = (id, title) => {
     const title_ = title.replace(/ /g, "-");
-    router.push(`/raffle/${id}/${title_}`);
+    const url = `/raffle/${id}/${title_}`;
+    window.open(url, '_blank');
   };
+  
+  function truncateString(str, num) {
+    if (str.length <= num) {
+      return str;
+    }
+    return str.slice(0, num) + '...';
+  }
 
   async function deleteRaffle(id) {
     Swal.fire({
@@ -63,15 +71,19 @@ export default function FindCampaign() {
     if(data.is_deleted !== true){
       return(
         <Raffle key={id}>
-          <h1>Rifa: {data.title}</h1>
+          <Title>
+            <h1>Rifa: {truncateString(data.title, 30)}</h1>
+          </Title>
           <h2>Total de cotas: {data.total_tickets}</h2>
           <h2>Valor: R$ {data.ticket_price}</h2>
           <h3>Expira em: {data.expire_at}</h3>
-          <Button onClick={() => handleViewRaffle(data.id, data.title)}>Ver pagina da Rifa</Button>
-          <DeleteButton onClick={() => deleteRaffle(data.id)}>
-            <DeleteIcon/>
-              Excluir Rifa
-          </DeleteButton>
+          <ButtonContainer>
+            <Button onClick={() => handleViewRaffle(data.id, data.title)}>Ver pagina da Rifa</Button>
+            <DeleteButton onClick={() => deleteRaffle(data.id)}>
+              <DeleteIcon/>
+                Excluir Rifa
+            </DeleteButton>
+          </ButtonContainer>
         </Raffle>
       )
     }
@@ -81,8 +93,11 @@ export default function FindCampaign() {
   <>
     {isLoading ? (
       <Container>
-        <Skeleton sx={{ height: 350, width: 200, borderRadius:10, padding:"20px", margin: 5 , position: "relative"}} animation="wave" variant="rectangular" />
-        <Skeleton sx={{ height: 350, width: 200, borderRadius:10, padding:"20px", margin: 5, position: "relative"}} animation="wave" variant="rectangular" />
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:7, padding:"15px", margin: 2 , position: "relative"}} animation="wave" variant="rectangular" />
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:7, padding:"15px", margin: 2, position: "relative"}} animation="wave" variant="rectangular" />
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:7, padding:"15px", margin: 2, position: "relative"}} animation="wave" variant="rectangular" />
+        <Skeleton sx={{ height: 350, width: 200, borderRadius:7, padding:"15px", margin: 2, position: "relative"}} animation="wave" variant="rectangular" />
+
       </Container>
       ) : (
     <Container>
@@ -98,10 +113,19 @@ const Container = styled.div`
   display: flex;
   width: 100%;
 `;
+const Title = styled.div`
+
+`;
+const ButtonContainer = styled.div`
+  position: absolute; /* Define a posição absoluta para os botões */
+  bottom: 10px; /* Define a distância dos botões em relação ao final do card */
+  left: 50%; /* Centraliza os botões horizontalmente */
+  transform: translateX(-50%); /* Centraliza os botões horizontalmente */
+`;
 
 const Raffle = styled.div`
-  height: 350px;
-  width: 200px;
+  height: 400px;
+  width: 250px;
   border: 1px solid #e2e2e2;
   border-radius: 10px;
   padding: 20px;
@@ -111,6 +135,7 @@ const Raffle = styled.div`
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+  overflow: hidden; /* Adicionado para evitar que o conteúdo ultrapasse a altura do card */
 `;
 const SpinnerContainer = styled.div`
   display: flex;
@@ -126,7 +151,6 @@ const StyledSpinner = styled.div`
   border-top: 5px solid purple;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -140,6 +164,7 @@ const DeleteButton = styled.button`
   display: flex;
   justify-content:center;
   align-items: center;
+  width: 200px;
   height: 30px;
   background-color: #ff847c;
   color: #ffffff;
@@ -149,18 +174,14 @@ const DeleteButton = styled.button`
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-
   &:hover {
     background-color: #e74c3c;
   }
 `;
 
 const Button = styled.button`
-  width: 100%;
-  margin-top: 90px;
+  width: 200px;
   margin-bottom: 10px;
-  height: 60px;
-
   background-color: #56bc86;
   color: #ffffff;
   border: none;
@@ -170,7 +191,6 @@ const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: bold;
-
   &:hover {
     background-color: #2ce080;
   }

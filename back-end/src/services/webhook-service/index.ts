@@ -54,7 +54,7 @@ async function findPurchaseAndChangePlan( idPayment: string, next: NextFunction)
     if (!idPayment) throw notFoundError();
     const payment = await mercadopago.payment.get(idPayment);
     if (!payment) throw notFoundError();
-    // const status_payment = payment.body.status;
+    // const status_payment = payment.body.status; // descomentar para producao
     const status_payment = "approved"; // retirar para produção
 
     console.log(status_payment)

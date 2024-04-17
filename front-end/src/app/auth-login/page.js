@@ -13,7 +13,6 @@ import Image from "next/image";
 
 
 export default function Login(){
-
     const router = useRouter();
     const [login, setLogin] = useState({
         email: '',
@@ -70,21 +69,36 @@ export default function Login(){
                     </LogoSide>
                     <form onSubmit={enviarLogin}>
                         <h1>Login</h1>
-                        <Inserir  id="email" type="email" placeholder="Email" value={login.email} onChange={(e)=>
-                        setLogin({...login, email: e.target.value})
-                        }required/>
-                        <Inserir id="password" type="password" placeholder="Senha" value={login.password_hash} onChange={(e)=>
-                        setLogin({...login, password_hash: e.target.value})
-                        }required/>
-
+                        <Inserir  
+                            id="email" 
+                            type="email" 
+                            placeholder="Email" 
+                            value={login.email} 
+                            onChange={(e) => setLogin({...login, email: e.target.value})} 
+                            required 
+                            autoComplete="username" // Adicionando o atributo autocomplete
+                        />
+                        <Inserir
+                            id="passwordInput" // Alterado para um ID único
+                            type="password"
+                            placeholder="Senha"
+                            value={login.password_hash}
+                            onChange={(e) => setLogin({...login, password_hash: e.target.value})}
+                            required
+                            autoComplete="current-password" // Adicionado o atributo autocomplete
+                        />
+                        <EsqueceuSenha>
+                            <a href={"/sign-up"} style={{ textDecoration: 'none' }}>
+                                <h2>Esqueceu sua senha? Clique aqui</h2>
+                                <br/>
+                            </a>
+                        </EsqueceuSenha>
                         <Botao type="submit">Entrar</Botao>
                         {/* <Botao2 type="submit">Entrar com sua conta Google</Botao2> */}
-                        <Cadastro>
-                            <Link href={"/sign-up"} style={{ textDecoration: 'none' }}>
-                                <h2>Primeira vez? Clique aqui e cadastre-se!</h2>
-                            </Link>
-                        </Cadastro>
                     </form>
+                        <Cadastro onClick={()=>router.push("/sign-up")}>
+                            <h2>Primeira vez? Clique aqui e cadastre-se!</h2>
+                        </Cadastro>
                 </Forms>
 
             </SideLogin>
@@ -147,7 +161,6 @@ const Inserir = styled.input`
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
 
-
     &:first-child{
         margin-top: 25px;
     }
@@ -161,13 +174,13 @@ const Botao = styled.button`
     height: 46px;
     margin-bottom:16px;
     
-    background: #60d6a7;
+    background: #0bea91;
     border-radius: 15px;
     border:none;
-    border: 3px solid #419A77;
+    border: 3px solid #60d6a7;
     cursor: pointer;
     &:hover{
-        background: #419A77;
+        background: #60d6a7;
     }
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
@@ -197,8 +210,21 @@ const Botao2 = styled.button`
     font-family: 'Raleway';
 `;
 
-const Cadastro = styled.div`
-    margin-top: 35px;
+const EsqueceuSenha = styled.div`
+    h2{
+        font-family: 'Montserrat', sans-serif;
+        color: #333333;
+        font-size: 15px;
+        font-weight: 400;
+    }
+`;
+
+const Cadastro = styled.button`
+    margin-top: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px;
+    box-sizing: border-box;
     h2{
         font-family: 'Montserrat', sans-serif;
         color: #333333;

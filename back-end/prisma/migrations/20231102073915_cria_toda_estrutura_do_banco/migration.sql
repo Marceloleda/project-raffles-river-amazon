@@ -65,6 +65,7 @@ CREATE TABLE "sellers" (
     "email" VARCHAR(255) NOT NULL,
     "password_hash" VARCHAR(255) NOT NULL,
     "phone_number" VARCHAR(20) NOT NULL,
+    "link_payment_mp" VARCHAR(300),
     "cpf" VARCHAR(15) NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,

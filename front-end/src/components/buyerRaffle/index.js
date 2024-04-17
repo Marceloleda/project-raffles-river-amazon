@@ -176,7 +176,7 @@ export default function Raffle({params, searchParams}) {
             {raffleDeleted?
               <SoldOffWord >
                 <h1>Indisponível!</h1>
-                <h1>Entre em contato com o suporte!</h1>
+                <h1>Para mais informações entre em contato com o suporte!</h1>
               </SoldOffWord>
             :
             ""

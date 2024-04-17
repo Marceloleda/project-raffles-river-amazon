@@ -107,6 +107,7 @@ export default function Cadastro(){
                                 onChange={(e)=>
                                 setCadastro({...cadastro, email: e.target.value})
                                 }
+                                autoComplete="current-email" // Adicionado o atributo autocomplete
                                 required
                             />
                             <Inserir 
@@ -144,6 +145,7 @@ export default function Cadastro(){
                                 onChange={(e)=>
                                 setCadastro({...cadastro, senha: e.target.value})
                                 }
+                                autoComplete="current-password" // Adicionado o atributo autocomplete
                                 required
                             />
                             <Inserir 
@@ -154,6 +156,7 @@ export default function Cadastro(){
                                 onChange={(e)=>
                                 setCadastro({...cadastro, confirmeSenha: e.target.value})
                                 }
+                                autoComplete="confirm-password" // Adicionado o atributo autocomplete
                                 required
                             />
 
@@ -176,10 +179,8 @@ export default function Cadastro(){
                     </FormGroup>
                 </Forms>
 
-                <Entrar>
-                    <Link href={`/auth-login`} style={{ textDecoration: 'none' }}>
-                        <h2>Já tem uma conta? Entre agora!</h2>
-                    </Link>
+                <Entrar onClick={()=>router.push("/auth-login")}>
+                        <h3>Já tem uma conta? Entre agora!</h3>
                 </Entrar>
             </Conteiner>
         </>
@@ -244,7 +245,7 @@ const Botao = styled.button`
     align-items: center;
     width: 326px;
     height: 46px;
-    background: green;
+    background: #0bea91;
     border-radius: 15px;
     border:none;
     cursor: pointer;
@@ -255,12 +256,21 @@ const Botao = styled.button`
     text-align: center;
     color: #FFFFFF;
     font-family: 'Raleway', sans-serif;
+    &:hover{
+        background: #419A77;
+    }
+    border: 2px solid #419A77 ;
+
 `;
-const Entrar = styled.div`
+const Entrar = styled.button`
+
     margin-top: 35px;
     margin-bottom: 55px;
-
-    h2{
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+    h3{
         font-family: 'Montserrat', sans-serif;
         color: #333333;
         font-size: 20px;

@@ -26,6 +26,7 @@ export default function RafflePagePrincipal({ params, searchParams }) {
     right: false,
   });
 
+
   const handleFindTickets = () => {
     setShowRaffle(false)
     setShowFindPurchase(true);
@@ -82,7 +83,8 @@ export default function RafflePagePrincipal({ params, searchParams }) {
           <ListItem key={text} >
             <ListItemButton onClick={()=>{
               window.open(
-                `https://api.whatsapp.com/send?phone=5592995074770&text=Ol%C3%A1.%20Preciso%20de%20suporte%20com%20uma%20Rifa,%20aguardo%20mais%20informa%C3%A7%C3%B5es.`,
+                `https://api.whatsapp.com/send?phone=5592995074770&text=Ol%C3%A1.%20Preciso%20de%20suporte%20com%20uma%20Rifa,%20aguardo%20mais%20informa%C3%A7%C3%B5es.
+                Rifa:%20https:www.rifasrioamazonas.com.br/${params.id}/${params.slug}`,
                 '_blank'
               );
             }}>

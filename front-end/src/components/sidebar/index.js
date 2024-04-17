@@ -7,7 +7,13 @@ import Swal from "sweetalert2";
 
 //colocar a logo RA
 export default function Sidebar({onFindCampaign, onHome}){
+    let user;
     const router = useRouter()
+
+    if (typeof window !== 'undefined') {
+        const userString = localStorage.getItem("user");
+        user = JSON.parse(userString);
+    }
 
     const exit = ()=>{
         Swal.fire({
@@ -46,8 +52,10 @@ export default function Sidebar({onFindCampaign, onHome}){
                 <p>Rifas Rio Amazonas</p>
             </Titlle>
             <User>
+                <h1>Olá {user?.name} 👋</h1>
+                <br/>
                 <h2>
-                    Bem vindo ao seu painel :)
+                    Bem vindo ao seu painel 😊
                 </h2>
             </User>
             <Option onClick={onHome}>Home</Option>

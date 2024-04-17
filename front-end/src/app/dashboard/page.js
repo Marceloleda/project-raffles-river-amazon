@@ -9,7 +9,7 @@ import CreateCampaign from "../../components/createCampaign";
 import FindCampaign from "../../components/findCampaign/index";
 
 export default function Seller(){
-    // const router = useRouter()
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(true);
     const [showCreateCampaign, setShowCreateCampaign] = useState(false);
     const [showFindCampaign, setShowFindCampaign] = useState(false);
@@ -34,10 +34,15 @@ export default function Seller(){
         findUser()
             .then((res)=>{
                 setUser(res.data)
+                const userString = JSON.stringify(res.data);
+                localStorage.setItem("user", userString);
                 setIsLoading(false);
             })
             .catch((err=>{
                 console.log(err.message)
+                if(err.message === "Request failed with status code 401"){
+                  router.push("/auth-login")
+                }
                 setIsLoading(true);
             }))
     },[])
@@ -67,7 +72,7 @@ export default function Seller(){
                             </Block> */}
                           </Blocks>
                         )}
-                        {showCreateCampaign && <CreateCampaign />}
+                        {showCreateCampaign && <CreateCampaign onHandleFindCampaign={handleFindCampaign}/>}
                         {showFindCampaign && <FindCampaign />}
                     </SellerPage>
                 </SellerPageWrapper>
