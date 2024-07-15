@@ -24,18 +24,19 @@ const ContainerBottom = styled.div`
     left: 0;
     width: 100%;
     background-color: #D6E5E3;
-    box-sizing: border-box;
-    padding: 15px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: 'Montserrat', sans-serif;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid #2ecc71;
+    text-align: center;
 
     h2 {
-        font-size: 15px;
-        color: black;
-        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+        margin: 10px 0;
     }
 `;
 
@@ -46,15 +47,14 @@ const Copyright = styled.div`
     margin-bottom: 10px;
 
     h2 {
-        font-size: 13px;
+        font-size: 14px;
+        color: #666;
         margin-right: 5px;
-    }
-
-    svg {
-        color: #000;
     }
 `;
 
 const LogoImage = styled(Image)`
-    margin-top: 10px;
+    margin-top: 15px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;

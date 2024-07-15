@@ -1,234 +1,227 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { api, findUser, signIn } from "../../services/api";
-import Link from "next/link";
 import { useRouter } from 'next/navigation';
-import Logo from '../../assets/images/logo_seler.jpeg'
 import Image from "next/image";
+import Logo from '../../assets/images/logo_seler.jpeg';
+import Link from "next/link";
 
-
-
-export default function Login(){
+export default function Login() {
     const router = useRouter();
     const [login, setLogin] = useState({
         email: '',
         password_hash: ''
-    })
-    
+    });
+
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
-        if(storedToken){
+        if (storedToken) {
             findUser()
-            .then(()=>{
-              router.push("/dashboard")
-          })
-          .catch((err=>{
-              localStorage.setItem("token", '')
-          }))
+                .then(() => {
+                    router.push("/dashboard");
+                })
+                .catch((err) => {
+                    localStorage.setItem("token", '');
+                });
         }
-      }, []);
+    }, []);
 
-    function enviarLogin(event){
+    function enviarLogin(event) {
         event.preventDefault();
 
         signIn(login)
-            .then((response)=>{
-            api.defaults.headers["Authorization"] = `Bearer ${response.data.Token}`;
-            localStorage.setItem("token", response.data.Token)
-            Swal.fire({
-                title: 'Logado com sucesso!',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 2000 // Define o tempo em milissegundos antes de fechar automaticamente (opcional)
-              });            
-            router.push("/dashboard");
-        })
+            .then((response) => {
+                api.defaults.headers["Authorization"] = `Bearer ${response.data.Token}`;
+                localStorage.setItem("token", response.data.Token);
+                Swal.fire({
+                    title: 'Logado com sucesso!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                router.push("/dashboard");
+            })
             .catch(err => {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "E-mail e/ou senha incorreto(s)",
-              });
-            console.log(err.message)
-        })
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "E-mail e/ou senha incorreto(s)",
+                });
+                console.log(err.message);
+            });
     }
-    return(
-        <Conteiner>
+
+    return (
+        <Container>
             <SideLogin>
-                <Forms>
-                    <LogoSide>
-                        <Image src={Logo}
+                <FormContainer>
+                    <LogoWrapper>
+                        <Image 
+                            src={Logo}
                             alt="Logo"
-                            width={150} 
-                            height={150} 
+                            width={150}
+                            height={150}
                         />
-                    </LogoSide>
+                    </LogoWrapper>
                     <form onSubmit={enviarLogin}>
-                        <h1>Login</h1>
-                        <Inserir  
-                            id="email" 
-                            type="email" 
-                            placeholder="Email" 
-                            value={login.email} 
-                            onChange={(e) => setLogin({...login, email: e.target.value})} 
-                            required 
-                            autoComplete="username" // Adicionando o atributo autocomplete
+                        <FormTitle>Login</FormTitle>
+                        <Input 
+                            id="email"
+                            type="email"
+                            placeholder="Email"
+                            value={login.email}
+                            onChange={(e) => setLogin({ ...login, email: e.target.value })}
+                            required
+                            autoComplete="username"
                         />
-                        <Inserir
-                            id="passwordInput" // Alterado para um ID único
+                        <Input
+                            id="passwordInput"
                             type="password"
                             placeholder="Senha"
                             value={login.password_hash}
-                            onChange={(e) => setLogin({...login, password_hash: e.target.value})}
+                            onChange={(e) => setLogin({ ...login, password_hash: e.target.value })}
                             required
-                            autoComplete="current-password" // Adicionado o atributo autocomplete
+                            autoComplete="current-password"
                         />
-                        <EsqueceuSenha>
-                            <a href={"/sign-up"} style={{ textDecoration: 'none' }}>
-                                <h2>Esqueceu sua senha? Clique aqui</h2>
-                                <br/>
-                            </a>
-                        </EsqueceuSenha>
-                        <Botao type="submit">Entrar</Botao>
-                        {/* <Botao2 type="submit">Entrar com sua conta Google</Botao2> */}
+                        <ForgotPassword>
+                            <Link href="/forgot-password" passHref>
+                                <StyledLink>Esqueceu sua senha?</StyledLink>
+                            </Link>
+                        </ForgotPassword>
+                        <Button type="submit">Entrar</Button>
                     </form>
-                        <Cadastro onClick={()=>router.push("/sign-up")}>
-                            <h2>Primeira vez? Clique aqui e cadastre-se!</h2>
-                        </Cadastro>
-                </Forms>
-
+                    <SignUp onClick={() => router.push("/sign-up")}>
+                        Primeira vez? Cadastre-se!
+                    </SignUp>
+                </FormContainer>
             </SideLogin>
-        </Conteiner>
+        </Container>
     );
 }
-const Conteiner = styled.div`
+
+const Container = styled.div`
     display: flex;
+    height: 100vh;
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 `;
+
 const SideLogin = styled.div`
-flex: 1;
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-background: linear-gradient(to bottom, #b3d0f7 0%, #7aa9eb 50%, #b3d0f7 100%);
-background-size: 100% 200%;
-animation: riverFlow 10s linear infinite;
-@keyframes riverFlow {
-    0%, 100% {
-        background-position: 0 0;
-    }
-    50% {
-        background-position: 0 100%;
-    }
-}
-`;
-const LogoSide = styled.div`
-flex: 1;
-display: flex;
-justify-content: center;
-align-items: center;
-margin-bottom:80px;
-
-`;
-const Forms = styled.div`
-    form{
-            display:flex;
-            flex-direction:column;
-            justify-content: center;
-            align-items: center;
-            h1{
-                margin-bottom: 30px;
-                font-family: 'Montserrat', sans-serif;
-                font-size: 25px;
-                color:black;
-            }
-        }
-`;
-
-const Inserir = styled.input`
-    width:330px;
-    height: 58px;
-    font-size:18px;
-    margin-bottom:16px;
-    background: #FFFFFF;
-    border: 1px solid #D5D5D5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 20px;
     border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    animation: fadeIn 1s ease-in-out;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+
+const FormContainer = styled.div`
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+`;
+
+const LogoWrapper = styled.div`
+    margin-bottom: 20px;
+`;
+
+const FormTitle = styled.h1`
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+    background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`;
+
+const Input = styled.input`
+    width: 100%;
+    height: 58px;
+    font-size: 18px;
+    margin-bottom: 16px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 10px;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease-in-out;
 
-    &:first-child{
-        margin-top: 25px;
+    &:focus {
+        border-color: #84fab0;
+        box-shadow: 0 0 5px rgba(132, 250, 176, 0.5);
     }
 `;
 
-const Botao = styled.button`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 326px;
-    height: 46px;
-    margin-bottom:16px;
-    
-    background: #0bea91;
-    border-radius: 15px;
-    border:none;
-    border: 3px solid #60d6a7;
+const ForgotPassword = styled.div`
+    margin-bottom: 20px;
+`;
+
+const StyledLink = styled.a`
+    font-family: 'Montserrat', sans-serif;
+    color: #007bff;
+    text-decoration: none;
     cursor: pointer;
-    &:hover{
-        background: #60d6a7;
+
+    &:hover {
+        text-decoration: underline;
     }
+`;
+
+const Button = styled.button`
+    width: 100%;
+    height: 50px;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     font-weight: 700;
-    line-height: 26px;
-    text-align: center;
-    color: #012C42;
-`;
-const Botao2 = styled.button`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 326px;
-    height: 46px;
-    margin-bottom:16px;
+    color: white;
+    transition: background 0.4s ease, transform 0.5s;
 
-    background: blue;
-    border-radius: 5px;
-    border:none;
-    cursor: pointer;
-    font-family: 'Roboto';
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 26px;
-    text-align: center;
-    color: #FFFFFF;
-    font-family: 'Raleway';
-`;
+    &:hover {
+        background: linear-gradient(90deg, #8fd3f4 0%, #84fab0 100%);
+        transform: scale(1.05);
 
-const EsqueceuSenha = styled.div`
-    h2{
-        font-family: 'Montserrat', sans-serif;
-        color: #333333;
-        font-size: 15px;
-        font-weight: 400;
     }
 `;
 
-const Cadastro = styled.button`
+const SignUp = styled.div`
     margin-top: 25px;
-    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
-    padding: 5px;
-    box-sizing: border-box;
-    h2{
-        font-family: 'Montserrat', sans-serif;
-        color: #333333;
-        font-size: 15px;
-        font-weight: 700;
+
+    &:hover {
+        text-decoration: underline;
     }
 `;

@@ -1,121 +1,135 @@
-'use client'
+'use client';
 
 import { findPlans, findUser } from "../../services/api";
 import CreatePayments from "../../services/paymentPlan";
 import { useEffect, useState } from "react";
-import { styled } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useRouter } from 'next/navigation';
+import { FaRegCheckCircle, FaRegTimesCircle, FaWhatsapp, FaBrush } from 'react-icons/fa';
 
-export default function Plans(){
+const primaryColor = '#ff847c';
+const secondaryColor = '#2ecc71';
+const highlightColor = '#ffcc5c';
+
+export default function Plans() {
   const router = useRouter();
-  const [plans, setPlans] = useState([])
+  const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
-  
+
   const handlePurchaseButtonClick = (plan) => {
     CreatePayments(plan.name, router);
   };
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    if(storedToken){
+    if (storedToken) {
       findUser()
-      .then((res)=>{
-        setUser(res.data)
-        setToken(storedToken);
-      })
-      .catch((err=>{
-          console.log(err.message)
-      }))
+        .then((res) => {
+          setUser(res.data);
+          setToken(storedToken);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     }
 
     findPlans()
-      .then((response)=>{
-        setPlans(response.data)
+      .then((response) => {
+        setPlans(response.data);
         setIsLoading(false);
       })
-      .catch(err=>{
-        console.log(err)
+      .catch(err => {
+        console.log(err);
         setIsLoading(false);
-    })
-  },[])
-
+      });
+  }, []);
 
   const cardPlans = plans
-  .sort((a, b) => a.id - b.id)
-  .map((plan, id)=>{
-    const delay = id * 100;
-    const isHighlighted = plan.name === "Pacote Premium";
-    return(
-      <PlanCard key={id} style={{ 
-        animationDelay: `${delay}ms`,
-        backgroundColor: isHighlighted ? "#ff847c" : "#f2f2f2",
-        }}
-        >
-        {isHighlighted && <BestSeller>POPULAR</BestSeller>}
-        <PlanName>{plan.name}</PlanName>
-        <PlanPrice><p>Pré-pago</p> <br/><h1>R$ {plan.price}</h1> </PlanPrice>
-        <PlanDescription>{plan.description}</PlanDescription>
-        <MaxTickets><p>Saldo de cotas:</p> <h1> {plan.max_tickets}</h1></MaxTickets>
-        <ExpireDay>O saldo vence em <h1>{plan.campaign_duration} dias</h1> </ExpireDay>
-        <MaxCampaign>Limite de campanha: <h1>{plan.max_campaigns}</h1></MaxCampaign>
-        <SupportEmail>Suporte via Email: <h1>{plan.support_email? "Sim" : "Não"}</h1></SupportEmail>
-        <SupportPhone>Suporte via WhatsApp: <h1>{plan.support_phone? "Sim": "Não"}</h1></SupportPhone>
-        <CustomLogo>Customizar a própria logo: <h1>{plan.custom_logo? "Sim": "Não"}</h1></CustomLogo>
-          <PurchaseButton onClick={() => handlePurchaseButtonClick(plan)} >
-            {plan.name === user?.plans?.name &&  token ? "Renovar" : "Adquirir"}
+    .sort((a, b) => a.id - b.id)
+    .map((plan, id) => {
+      const delay = id * 100;
+      const isHighlighted = plan.name === "Pacote Premium";
+      return (
+        <PlanCard key={id} style={{ 
+          animationDelay: `${delay}ms`,
+          background: isHighlighted ? highlightColor : "#fff",
+        }}>
+          {isHighlighted && <BestSeller>POPULAR</BestSeller>}
+          <PlanName>{plan.name}</PlanName>
+          <PlanPrice $highlighted={isHighlighted}><p>Pré-pago</p> <h1>R$ {plan.price}</h1></PlanPrice>
+          <PlanDescription $highlighted={isHighlighted}>{plan.description}</PlanDescription>
+          <PlanDetails $highlighted={isHighlighted}>
+            Saldo de cotas: <h1>{plan.max_tickets}</h1>
+          </PlanDetails>
+          <PlanDetails $highlighted={isHighlighted}>
+            O saldo vence em <h1>{plan.campaign_duration} dias</h1>
+          </PlanDetails>
+          <PlanDetails $highlighted={isHighlighted}>
+            Limite de campanha: <h1>{plan.max_campaigns}</h1>
+          </PlanDetails>
+          <PlanDetails $highlighted={isHighlighted}>
+            Suporte via Email: <h1>{plan.support_email ? <FaRegCheckCircle /> : <FaRegTimesCircle />}</h1>
+          </PlanDetails>
+          <PlanDetails $highlighted={isHighlighted}>
+            Suporte via WhatsApp: <h1>{plan.support_phone ? <FaWhatsapp /> : <FaRegTimesCircle />}</h1>
+          </PlanDetails>
+          <PlanDetails $highlighted={isHighlighted}>
+            Customizar a própria logo: <h1>{plan.custom_logo ? <FaBrush /> : <FaRegTimesCircle />}</h1>
+          </PlanDetails>
+          <PurchaseButton onClick={() => handlePurchaseButtonClick(plan)}>
+            {plan.name === user?.plans?.name && token ? "Renovar" : "Adquirir"}
           </PurchaseButton>
-      </PlanCard>
-    )
-  })
+        </PlanCard>
+      );
+    });
 
-    return(
-        <>
-            <PlansContainer>
-            {isLoading ? (
-              <SpinnerContainer>
-                <StyledSpinner />
-              </SpinnerContainer>
-              ) : (
-              <>
-                {cardPlans}
-              </>
-            )}
-            </PlansContainer>
-        </>
-    )
+  return (
+    <PlansContainer>
+      {isLoading ? (
+        <SpinnerContainer>
+          <StyledSpinner />
+        </SpinnerContainer>
+      ) : (
+        cardPlans
+      )}
+    </PlansContainer>
+  );
 }
+
 const PlansContainer = styled.div`
-display: flex;
-justify-content: space-around;
-flex-direction: wrap;
-box-sizing: border-box;
-margin-top: 20px;
-margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  margin: 20px auto;
+  padding: 20px;
+  width: 100%;
+  background: #f0f0f5;
 `;
 
 const PlanCard = styled.div`
-  position: relative;
+   position: relative;
   display: flex;
   flex-direction: column;
   margin: 15px;
-  width: 250px;
+  width: 340px;
   height: 475px;
-  background-color: #f2f2f2;
-  border-radius: 40px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(1, 1, 2, 1);
-  border: 4px solid ${props => (props.isHighlighted ? '#00FF00' : '#ff847c')};
-  font-family: 'Nunito', sans-serif;
-
-  opacity: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f7fa 100%);
+  border: none;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   animation: fade-in 0.5s ease-in-out forwards;
   animation-delay: 0ms;
   transition: box-shadow 0.3s ease, margin-top 0.3s ease;
+  
+  opacity: 0;
 
   &:hover {
-    box-shadow: 0 4px 9px rgba(5, 5, 5, 1.5); /* Aumenta a sombra quando o mouse está sobre a div */
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     margin-top: -5px;
   }
 
@@ -129,128 +143,100 @@ const PlanCard = styled.div`
       transform: translateY(0);
     }
   }
-
 `;
-const BestSeller = styled.p`
-font-size: 17px;
+
+const BestSeller = styled.div`
+  font-size: 0.875rem;
   font-weight: bold;
-  color: yellow;
-  background-color: #ff847c;
-  border-radius: 4px;
+  color: #fff;
+  background: ${secondaryColor};
+  border-radius: 0 15px 0 15px;
   padding: 8px 16px;
   position: absolute;
-  top: 0px;
-  right: 40px;
-  transform: rotate(45deg) translateX(50%) translateY(-50%);
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  top: -25px;
+  right: 0;
+  z-index: 1;
 `;
 
 const PlanName = styled.h3`
   font-family: 'Montserrat', sans-serif;
-  font-size: 20px;
+  font-size: 1.4rem;
   font-weight: bold;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  text-align: center;
 `;
 
 const PlanPrice = styled.div`
   font-family: 'Montserrat', sans-serif;
-  font-size: 18px;
+  font-size: 1rem;
   margin-bottom: 20px;
-  h1{
-    font-weight: bold;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 20px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    margin-bottom: 7px;
+
+    color: ${({ $highlighted }) => ($highlighted ? '#fff' : '#888')};
   }
 
+  h1 {
+    font-weight: bold;
+    font-size: 2rem;
+    color: ${({ $highlighted }) => ($highlighted ? '#fff' : primaryColor)};
+    margin: 0;
+  }
 `;
 
 const PlanDescription = styled.div`
-  font-size: 16px;
+  font-size: 0.9rem;
   margin-bottom: 20px;
-  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5;
+  text-align: center;
+  color: ${({ $highlighted }) => ($highlighted ? '#555' : '#555')};
 `;
-const MaxTickets = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
 
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-}
-`;
-const ExpireDay = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-  margin-right: 5px;
+const PlanDetails = styled.div`
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-}
-`;
-const MaxCampaign = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
+  h1 {
+    font-weight: bold;
+    color: ${({ $highlighted }) => ($highlighted ? '#fff' : 'black')};
+  }
 
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-}
+  svg {
+    margin-left: 5px;
+    color: ${({ $highlighted }) => ($highlighted ? '#fff' : highlightColor)};
+  }
 `;
-const SupportEmail = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
 
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-}
-`;
-const SupportPhone = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-}
-`;
-const CustomLogo = styled.div`
-display: flex;
-font-size: 16px;
-margin-bottom: 10px;
-font-family: 'Open Sans', sans-serif;
-h1{
-  font-weight: bold;
-  margin-left: 5px;
-}
-
-`;
 const PurchaseButton = styled.button`
-background-color: #00cc66; 
-color: #fff;
-font-weight: bold;
-border: none;
-border-radius: 15px;
-padding: 12px 24px; 
-font-size: 22px; 
-margin-top: auto; 
-cursor: pointer;
-border: 3px solid #4ba04f; 
-&:hover{
-  background: #4ba04f;
-}
+  background: linear-gradient(90deg, ${secondaryColor} 0%, #00b359 100%);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 1rem;
+  margin-top: auto;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(90deg, #00b359 0%, ${secondaryColor} 100%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
 `;
+
 const SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -262,7 +248,7 @@ const StyledSpinner = styled.div`
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid red;
+  border-top: 5px solid ${primaryColor};
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
